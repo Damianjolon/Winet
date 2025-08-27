@@ -31,7 +31,7 @@ export interface EmpleadoCreate {
 @Injectable({ providedIn: 'root' })
 export class EmpleadosService {
   /** Ajusta a tu backend (o usa environment.apiUrl) */
-  private base = '/api/empleados';
+  private base = 'http://localhost:3001/api/empleados';
   private municipiosBase = '/api/municipios';
   actualizarEmpleado: any;
 
@@ -39,14 +39,10 @@ export class EmpleadosService {
 
   /* ================== EMPLEADOS (listado demo) ================== */
 
-  listar(): Observable<Empleado[]> {
-    // return this.http.get<Empleado[]>(this.base);
-    return of([
-      { id:1, primer_nombre:'Ana',   primer_apellido:'Lopez',  email:'ana@acme.com',   puesto:'Soporte', estado:'ACTIVO',   rol:'Operador',  fechaIngreso:'2024-01-12' },
-      { id:2, primer_nombre:'Luis',  primer_apellido:'Perez',  email:'luis@acme.com',  puesto:'Ventas',  estado:'ACTIVO',   rol:'Vendedor',  fechaIngreso:'2023-11-02' },
-      { id:3, primer_nombre:'María', primer_apellido:'García', email:'maria@acme.com', puesto:'Admin',   estado:'INACTIVO', rol:'Asistente', fechaIngreso:'2022-08-20' }
-    ]);
-  }
+listar(): Observable<Empleado[]> {
+  return this.http.get<Empleado[]>(`${this.base}/listar`)
+    .pipe(catchError(this.handle));
+}
 
   obtener(id:number): Observable<Empleado> {
     // return this.http.get<Empleado>(`${this.base}/${id}`)
@@ -101,6 +97,13 @@ export class EmpleadosService {
   listarTareas(): Observable<Tarea[]> { return of([]); }
   listarTareasPorEmpleado(id:number): Observable<Tarea[]> { return of([]); }
   asignarTarea(t:Partial<Tarea>): Observable<any> { return of(true); }
+
+
+listarEstados(): Observable<{ id: number, nombre: string }[]> {
+  return this.http.get<{ id: number, nombre: string }[]>(`/api/estados`)
+    .pipe(catchError(this.handle));
+}
+
 
   /* ================== Manejo de errores ================== */
 

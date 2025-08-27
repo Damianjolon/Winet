@@ -1,77 +1,84 @@
 <section class="app-superficie">
-<div class="tarjeta-encabezado" style="gap:12px; flex-wrap: wrap;">
-  <mat-icon>groups</mat-icon>
-  <h2 style="margin:0">Empleados</h2>
-  <span class="texto-muted" style="margin-left:auto">Gestión de personal</span>
-  <button mat-raised-button class="btn-primario" (click)="crear()">
-    <mat-icon>person_add</mat-icon> Nuevo
-  </button>
-</div>
+  <div class="tarjeta-encabezado" style="gap:12px; flex-wrap: wrap;">
+    <mat-icon>groups</mat-icon>
+    <h2 style="margin:0">Empleados</h2>
+    <span class="texto-muted" style="margin-left:auto">Gestión de personal</span>
+    <button mat-raised-button class="btn-primario" (click)="crear()">
+      <mat-icon>person_add</mat-icon> Nuevo
+    </button>
+  </div>
 
+  <div class="tarjeta-cuerpo">
+    <!-- ================= FILTROS ================= -->
+    <div class="filtros">
+      <mat-form-field appearance="fill" class="input-oscuro">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Buscar nombre, email o puesto" [(ngModel)]="buscar">
+      </mat-form-field>
 
+      <!-- Select de estados -->
+      <mat-form-field appearance="fill" class="input-oscuro">
+      <mat-select placeholder="Estado" [(value)]="estadoSeleccionado">
+        <mat-option value="TODOS">Todos</mat-option>
+        <mat-option value="ACTIVO">Activos</mat-option>
+        <mat-option value="INACTIVO">Inactivos</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-<div class="tarjeta-cuerpo">
-<div class="filtros">
-<mat-form-field appearance="fill" class="input-oscuro">
-<mat-icon matPrefix>search</mat-icon>
-<input matInput placeholder="Buscar nombre, email o puesto" [(ngModel)]="buscar">
-</mat-form-field>
+    </div>
 
+    <!-- ================= LOADER ================= -->
+    <div *ngIf="cargando" class="texto-muted">Cargando...</div>
 
-<mat-form-field appearance="fill" class="input-oscuro">
-<mat-select placeholder="Estado" [(value)]="estado">
-<mat-option value="TODOS">Todos</mat-option>
-<mat-option value="ACTIVO">Activos</mat-option>
-<mat-option value="INACTIVO">Inactivos</mat-option>
-</mat-select>
-</mat-form-field>
-</div>
+    <!-- ================= TABLA ================= -->
+    <table class="tabla-oscura" *ngIf="!cargando">
+      <thead>
+        <tr>
+          <th>Empleado</th>
+          <th>Correo</th>
+          <th>Puesto</th>
+          <th>Estado</th>
+          <th>Ingreso</th>
+          <th style="width:190px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of filtrar()">
+          <!-- Nombre completo -->
+          <td>
+            {{ e.primer_nombre }} {{ e.segundo_nombre ?? '' }} {{ e.primer_apellido }} {{ e.segundo_apellido ?? '' }}
+          </td>
 
+          <!-- Correo -->
+          <td>{{ e.email }}</td>
 
-<div *ngIf="cargando" class="texto-muted">Cargando...</div>
+          <!-- Puesto -->
+          <td>{{ e.puesto }}</td>
 
+          <!-- Estado -->
+          <td>
+            <span class="etiqueta" [ngClass]="{
+              'exito': e.estado === 'ACTIVO',
+              'peligro': e.estado === 'INACTIVO'
+            }">
+              {{ e.estado }}
+            </span>
+          </td>
 
-<table class="tabla-oscura" *ngIf="!cargando">
-<thead>
-<tr>
-<th>Empleado</th>
-<th>Correo</th>
-<th>Puesto</th>
-<th>Estado</th>
-<th>Ingreso</th>
-<th style="width:190px">Acciones</th>
-</tr>
-</thead>
-<tbody>
-<tr *ngFor="let e of filtrar()">
-<td>
-<div style="display:flex;align-items:center;gap:10px">
-<mat-icon>account_circle</mat-icon>
-<div>
-<div>{{ e.primer_nombre }} {{ e.primer_apellido }}</div>
-<small class="texto-muted">{{ e.rol || '—' }}</small>
-</div>
-</div>
-</td>
-<td>{{ e.email }}</td>
-<td>{{ e.puesto }}</td>
-<td>
-<span class="etiqueta" [ngClass]="{
-'exito': e.estado==='ACTIVO',
-'peligro': e.estado==='INACTIVO'
-}">{{ e.estado }}</span>
-</td>
-<td>{{ e.fechaIngreso || '—' }}</td>
-<td>
-<button mat-stroked-button class="btn-fantasma" (click)="editar(e)">
-<mat-icon>edit</mat-icon>
-</button>
-<button mat-stroked-button class="btn-fantasma" (click)="verTareas(e)">
-<mat-icon>assignment</mat-icon>
-</button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
+          <!-- Fecha Ingreso -->
+          <td>{{ e.fechaIngreso | date:'yyyy-MM-dd' }}</td>
+
+          <!-- Acciones -->
+          <td>
+            <button mat-stroked-button class="btn-fantasma" (click)="editar(e)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-stroked-button class="btn-fantasma" (click)="verTareas(e)">
+              <mat-icon>assignment</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
