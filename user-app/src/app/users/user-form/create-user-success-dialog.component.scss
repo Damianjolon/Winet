@@ -1,0 +1,46 @@
+/* ===== Contenido interno (se queda igual) ===== */
+:host { color: #111827; } /* texto base oscuro */
+
+.dialog-wrap {
+  display: grid; justify-items: center; text-align: center;
+  padding: 20px 18px 16px; gap: 14px;
+}
+.ok-icon { font-size: 64px; height: 64px; width: 64px; color: #16a34a; }
+.title { margin: 0; font-weight: 800; letter-spacing: .2px; color: #111827; }
+
+.details { width: 100%; max-width: 480px; display: grid; gap: 8px; }
+.line { display: grid; grid-template-columns: 28px 1fr; align-items: start; gap: 10px; }
+.line-icon { font-size: 22px; height: 22px; width: 22px; }
+.line-icon.person { color: #1d4ed8; }  /* azul */
+.line-icon.module { color: #047857; }  /* verde */
+.value { text-align: left; color: #111827; } /* letras negras */
+
+.actions { margin-top: 10px; display: flex; gap: 10px; justify-content: center; }
+
+/* ===== Fuerza BLANCO + letras NEGRAS SOLO para este diálogo =====
+   Usa tu panelClass: 'success-dialog-panel' */
+:host ::ng-deep .success-dialog-panel .mdc-dialog__surface {
+  background: #ffffff !important;   /* fondo blanco */
+  color: #111827 !important;         /* texto principal negro */
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(17,24,39,.24);
+}
+
+/* Título y contenido en negro (algunos temas los ponen grises/oscuros) */
+:host ::ng-deep .success-dialog-panel .mdc-dialog__title,
+:host ::ng-deep .success-dialog-panel .mdc-dialog__content,
+:host ::ng-deep .success-dialog-panel .mat-mdc-dialog-title,
+:host ::ng-deep .success-dialog-panel .mat-mdc-dialog-content {
+  color: #111827 !important;
+}
+
+/* (Opcional) Botón más legible sobre blanco */
+:host ::ng-deep .success-dialog-panel .mdc-button {
+  font-weight: 700;
+}
+
+/* (Opcional) Backdrop suave solo para este diálogo */
+:host ::ng-deep .backdrop-soft {
+  background: rgba(0,0,0,.28);
+  backdrop-filter: blur(2px);
+}

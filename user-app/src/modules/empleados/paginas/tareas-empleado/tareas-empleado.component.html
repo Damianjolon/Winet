@@ -1,56 +1,151 @@
-<section class="app-superficie">
-<div class="grid">
-<div class="tarjeta-glass">
-<div class="tarjeta-encabezado">
-<mat-icon>today</mat-icon>
-<h3 style="margin:0">Tareas del día</h3>
-</div>
-<div class="tarjeta-cuerpo">
-<table class="tabla-oscura">
-<thead>
-<tr>
-<th>Tarea</th>
-<th>Prioridad</th>
-<th>Estado</th>
-<th>Acciones</th>
-</tr>
-</thead>
-<tbody>
-<tr *ngFor="let t of tareasHoy">
-<td>{{ t.titulo }}</td>
-<td><span class="etiqueta" [ngClass]="{ 'advertencia': t.prioridad==='ALTA', 'exito': t.prioridad==='BAJA' }">{{ t.prioridad }}</span></td>
-<td><span class="etiqueta" [ngClass]="{ 'exito': t.estado==='COMPLETADA', 'advertencia': t.estado==='EN_PROCESO' }">{{ t.estado }}</span></td>
-<td>
-<button mat-stroked-button class="btn-fantasma"><mat-icon>done</mat-icon></button>
-<button mat-stroked-button class="btn-fantasma"><mat-icon>edit</mat-icon></button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<section class="app-superficie tareas-contrast">
+  <!-- Encabezado -->
+  <div class="tarjeta-encabezado encabezado-compacto">
+    <mat-icon class="head-icon">today</mat-icon>
+    <h3 class="titulo">Tareas por día</h3>
 
+    <span class="spacer"></span>
 
-<div class="tarjeta-glass">
-<div class="tarjeta-encabezado">
-<mat-icon>view_kanban</mat-icon>
-<h3 style="margin:0">Tablero de estados</h3>
-</div>
-<div class="tarjeta-cuerpo tablero">
-<div class="col">
-<h4>Pendiente</h4>
-<div class="pill">Configurar correos</div>
-<div class="pill">Capacitar nuevo ingreso</div>
-</div>
-<div class="col">
-<h4>En proceso</h4>
-<div class="pill">Actualizar catálogo</div>
-</div>
-<div class="col">
-<h4>Completadas</h4>
-<div class="pill hecho">Enviar reporte</div>
-</div>
-</div>
-</div>
-</div>
+    <button mat-stroked-button class="btn-fantasma" (click)="anterior()" matTooltip="Día anterior">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <!-- FECHA: modo outline + color primario -->
+    <mat-form-field appearance="outline" color="primary" class="fecha-control">
+      <mat-label>Fecha</mat-label>
+      <input matInput [matDatepicker]="dp" [value]="fecha" (dateChange)="onDate($event.value)" />
+      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+      <mat-datepicker #dp startView="month"></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-stroked-button class="btn-fantasma" (click)="siguiente()" matTooltip="Día siguiente">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    <button mat-raised-button color="primary" (click)="hoy()" matTooltip="Ir a hoy">
+      Hoy
+    </button>
+  </div>
+
+  <!-- LISTA -->
+  <div class="tarjeta-glass tabla-card">
+    <div class="tarjeta-encabezado">
+      <mat-icon class="head-icon">task</mat-icon>
+      <h3 class="titulo">Listado</h3>
+    </div>
+
+    <div class="tabla-wrap">
+      <table class="tabla-limpia">
+        <thead>
+          <tr>
+            <th>Empleado</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th class="col-acciones">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let t of tareasHoy">
+            <td><span class="col-emp">{{ t.asignadoANombre }}</span></td>
+            <td>{{ t.titulo }}</td>
+            <td>{{ t.descripcion }}</td>
+            <td>{{ t.prioridad }}</td>
+            <td>{{ t.estado }}</td>
+            <td class="acciones-cell">
+              <button mat-stroked-button color="primary" (click)="cambiarEstado(t, 'EN_PROCESO')"
+                *ngIf="t.estado==='PENDIENTE'">Iniciar</button>
+
+              <button mat-stroked-button color="primary" (click)="marcarCompletada(t)"
+                *ngIf="t.estado!=='COMPLETADA'">Completar</button>
+
+              <button mat-stroked-button color="warn" (click)="cambiarEstado(t, 'PENDIENTE')"
+                *ngIf="t.estado==='COMPLETADA'">Reabrir</button>
+
+              <button mat-stroked-button class="btn-finalizada" (click)="finalizar(t)">
+                Finalizada
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- === TABLERO (kanban simple) === -->
+  <div class="tarjeta-glass">
+    <div class="tarjeta-encabezado">
+      <mat-icon class="head-icon">view_kanban</mat-icon>
+      <h3 class="titulo">Tablero de estados</h3>
+    </div>
+
+    <div class="tarjeta-cuerpo tablero">
+      <div class="col">
+        <h4>Tarea por Realizar</h4>
+        <div *ngIf="!pendientes.length" class="texto-muted">—</div>
+        <div class="pill" *ngFor="let t of pendientes" (click)="cambiarEstado(t, 'EN_PROCESO')"
+          matTooltip="Mover a En proceso">
+          {{ t.titulo }}
+        </div>
+      </div>
+
+      <!-- Pendiente -->
+      <div class="col">
+        <h4>Pendiente</h4>
+        <div *ngIf="!pendientes.length" class="texto-muted">—</div>
+        <div class="pill" *ngFor="let t of pendientes" (click)="cambiarEstado(t, 'EN_PROCESO')"
+          matTooltip="Mover a En proceso">
+          <div class="pill-title">{{ t.titulo }}</div>
+          <div class="pill-sub">{{ t.asignadoANombre }}</div>
+        </div>
+      </div>
+
+      <!-- En proceso -->
+      <div class="col">
+        <h4>En proceso</h4>
+        <div *ngIf="!enProceso.length" class="texto-muted">—</div>
+        <div class="pill" *ngFor="let t of enProceso" (click)="cambiarEstado(t, 'COMPLETADA')"
+          matTooltip="Marcar como Completada">
+          <div class="pill-title">{{ t.titulo }}</div>
+          <div class="pill-sub">{{ t.asignadoANombre }}</div>
+        </div>
+      </div>
+
+      <!-- Completadas -> FINALIZADA -->
+      <div class="col">
+        <h4>Completadas</h4>
+        <div *ngIf="!completadas.length" class="texto-muted">—</div>
+        <div class="pill hecho" *ngFor="let t of completadas" (click)="finalizarEstado(t)"
+          matTooltip="Se ha completado la tarea del día">
+          <div class="pill-title">{{ t.titulo }}</div>
+          <div class="pill-sub">{{ t.asignadoANombre }}</div>
+        </div>
+      </div>
+
+      <!-- NUEVA: Finalizadas -->
+      <!-- <div class="col">
+        <h4>Finalizadas</h4>
+        <div *ngIf="!finalizadas.length" class="texto-muted">—</div>
+        <div class="pill hecho" *ngFor="let t of finalizadas">
+          <div class="pill-title">{{ t.titulo }}</div>
+          <div class="pill-sub">{{ t.asignadoANombre }}</div> -->
+
+      <!-- acción eliminar definitiva -->
+      <!-- <div style="display:flex; gap:8px; margin-top:6px;"> -->
+      <!-- En la columna "Finalizadas" -->
+      <!-- <button mat-stroked-button class="btn-fantasma rojo"
+                  (click)="eliminarDef(t)">
+            <mat-icon>delete</mat-icon> Eliminar
+          </button> -->
+
+      <!-- <button mat-stroked-button (click)="cambiarEstado(t,'COMPLETADA')">
+              <mat-icon>undo</mat-icon> Reabrir
+            </button>
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
 </section>

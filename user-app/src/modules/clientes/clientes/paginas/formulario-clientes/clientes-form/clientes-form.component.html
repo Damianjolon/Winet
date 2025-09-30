@@ -1,0 +1,111 @@
+<!-- clientes-form.component.html -->
+<section class="app-superficie tareas-contrast">
+  <!-- Card principal -->
+  <div class="tarjeta-glass card-elevada">
+
+    <!-- Encabezado dentro de la card, arriba del formulario -->
+    <div class="tarjeta-encabezado encabezado-compacto">
+      <mat-icon class="head-icon">{{ isEdit ? 'edit' : 'person_add' }}</mat-icon>
+      <h3 class="titulo">{{ isEdit ? 'Editar cliente' : 'Nuevo cliente' }}</h3>
+      <span class="spacer"></span>
+    </div>
+
+    <div class="tarjeta-cuerpo">
+      <!-- Formulario en 3 columnas (md-4), 1 columna en móvil -->
+      <form [formGroup]="form" class="form-grid" autocomplete="off">
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Primer Nombre </mat-label>
+          <input matInput formControlName="primer_nombre" />
+          <mat-error *ngIf="form.get('primer_nombre')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Segundo Nombre</mat-label>
+          <input matInput formControlName="segundo_nombre" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Primer Apellido </mat-label>
+          <input matInput formControlName="primer_apellido" />
+          <mat-error *ngIf="form.get('primer_apellido')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Segundo Apellido</mat-label>
+          <input matInput formControlName="segundo_apellido" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Correo electrónico </mat-label>
+          <input matInput formControlName="correo" />
+          <mat-error *ngIf="form.get('correo')?.hasError('required')">Requerido</mat-error>
+          <mat-error *ngIf="form.get('correo')?.hasError('email')">Formato inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Teléfono </mat-label>
+          <input matInput formControlName="Telefono" />
+          <mat-error *ngIf="form.get('Telefono')?.hasError('required')">Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Dirección</mat-label>
+          <textarea matInput rows="2" formControlName="direccion"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Zona</mat-label>
+          <input matInput type="number" formControlName="zona" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Colonia</mat-label>
+          <input matInput formControlName="colonia" />
+        </mat-form-field>
+
+        <!-- Departamento -->
+<mat-form-field appearance="outline" class="col-12 col-md-4">
+  <mat-label>Departamento</mat-label>
+  <mat-select formControlName="id_departamento"
+              class="select-gris"
+              panelClass="select-overlay-gris">
+    <mat-option [value]="null" disabled>Seleccione…</mat-option>
+    <mat-option *ngFor="let d of departamentos" [value]="d.id">{{ d.nombre }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- Municipio -->
+<mat-form-field appearance="outline" class="col-12 col-md-4">
+  <mat-label>Municipio</mat-label>
+  <mat-select formControlName="id_municipio"
+              class="select-gris"
+              panelClass="select-overlay-gris">
+    <mat-option [value]="null" disabled>Seleccione…</mat-option>
+    <mat-option *ngFor="let m of municipios" [value]="m.id">{{ m.nombre }}</mat-option>
+  </mat-select>
+  <mat-hint *ngIf="!form.get('id_departamento')?.value">Seleccione un departamento primero</mat-hint>
+</mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-12 col-md-4">
+          <mat-label>Estado</mat-label>
+          <mat-select formControlName="id_estado"
+                      class="select-gris"
+                      panelClass="select-overlay-gris">
+            <mat-option [value]="2">Activo</mat-option>
+            <mat-option [value]="3">Inactivo</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+
+      <div class="acciones-form">
+        <button mat-raised-button class="btn-cancelar" type="button" (click)="cancelar()">
+          <mat-icon>arrow_back</mat-icon> Cancelar
+        </button>
+        <button mat-raised-button class="btn-primario" type="button"
+                [disabled]="form.invalid" (click)="guardar()">
+          {{ isEdit ? 'Guardar cambios' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

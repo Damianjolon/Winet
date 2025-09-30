@@ -68,3 +68,14 @@ mat-form-field {
   color: #fff;
   font-weight: bold;
 }
+
+.success-snackbar {
+  white-space: pre-line;          /* muestra \n como salto de línea */
+  letter-spacing: .2px;
+}
+
+.error-snackbar {
+  white-space: pre-line;
+}
+
+.success-snackbar, .error-snackbar { white-space: pre-line; }

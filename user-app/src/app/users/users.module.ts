@@ -10,19 +10,24 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserFormComponent } from './user-form/user-form.component';
 import { MatListModule } from "@angular/material/list";
 import { MatIconModule } from "@angular/material/icon";
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CreateUserSuccessDialogComponent } from './user-form/create-user-success-dialog.component';
+import { ConfirmDeleteUserDialogComponent } from './user-form/confirm-delete-user-dialog.component';
 
 
 @NgModule({
   declarations: [
     UserListComponent,
-    UserFormComponent
+    UserFormComponent,
+    CreateUserSuccessDialogComponent,
+    ConfirmDeleteUserDialogComponent
   ],
   imports: [
     MatTableModule,
@@ -30,7 +35,6 @@ import { MatTableModule } from '@angular/material/table';
     ReactiveFormsModule,
     FormsModule,
     UsersRoutingModule,
-    // 👇 Angular Material
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -38,6 +42,10 @@ import { MatTableModule } from '@angular/material/table';
     MatSelectModule,
     MatCheckboxModule,
     MatListModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    MatDialogModule,
     MatIconModule
 ]
 })

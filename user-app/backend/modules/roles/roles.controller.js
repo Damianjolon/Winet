@@ -2,10 +2,15 @@ const db = require('../../src/db');
 
 exports.getRoles = async (_req, res) => {
   try {
-    const [rows] = await db.query('SELECT id, nombre, descripcion FROM TC_ROLES');
+    const [rows] = await db.query(`
+      SELECT id, nombre
+      FROM TC_ROLES
+      WHERE nombre IS NOT NULL AND nombre <> ''
+      ORDER BY nombre
+    `);
     res.json(rows);
   } catch (err) {
-    console.error('Error al obtener roles:', err);
-    res.status(500).json({ error: 'Error al obtener roles' });
+    console.error('[getRoles]', err);
+    res.status(500).json({ message: 'Error al obtener roles' });
   }
 };

@@ -1,10 +1,16 @@
 <section class="app-superficie">
   <div class="tarjeta-encabezado" style="gap:12px; flex-wrap: wrap;">
     <mat-icon>groups</mat-icon>
-    <h2 style="margin:0">Empleados</h2>
+    <h2 style="margin:0">Administración de Empleados</h2>
     <span class="texto-muted" style="margin-left:auto">Gestión de personal</span>
     <button mat-raised-button class="btn-primario" (click)="crear()">
       <mat-icon>person_add</mat-icon> Nuevo
+    </button>
+    <span class="spacer"></span>
+    <button mat-stroked-button class="btn-fantasma" routerLink="/empleados/tareas"
+      matTooltip="Ver tablero general de tareas" aria-label="Abrir tableros">
+      <mat-icon>dashboard</mat-icon>
+      Tableros
     </button>
   </div>
 
@@ -18,12 +24,12 @@
 
       <!-- Select de estados -->
       <mat-form-field appearance="fill" class="input-oscuro">
-      <mat-select placeholder="Estado" [(value)]="estadoSeleccionado">
-        <mat-option value="TODOS">Todos</mat-option>
-        <mat-option value="ACTIVO">Activos</mat-option>
-        <mat-option value="INACTIVO">Inactivos</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <mat-select placeholder="Estado" [(value)]="estadoSeleccionado">
+          <mat-option value="TODOS">Todos</mat-option>
+          <mat-option value="ACTIVO">Activos</mat-option>
+          <mat-option value="INACTIVO">Inactivos</mat-option>
+        </mat-select>
+      </mat-form-field>
 
     </div>
 
@@ -68,15 +74,28 @@
           <!-- Fecha Ingreso -->
           <td>{{ e.fechaIngreso | date:'yyyy-MM-dd' }}</td>
 
-          <!-- Acciones -->
-          <td>
-            <button mat-stroked-button class="btn-fantasma" (click)="editar(e)">
+          <td style="display:flex; gap:8px; justify-content:center;">
+            <!-- Editar -->
+            <button mat-icon-button matTooltip="Editar" class="btn-accion" (click)="editar(e)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-stroked-button class="btn-fantasma" (click)="verTareas(e)">
-              <mat-icon>assignment</mat-icon>
+
+            <!-- Tareas: tooltip en wrapper para que se muestre aun si el botón está deshabilitado -->
+            <span [matTooltip]="esInactivo(e) ? 'Empleado inactivo: No se pueden asignar tareas' : 'Asignar tarea'"
+              matTooltipPosition="above" [matTooltipShowDelay]="200">
+              <button mat-icon-button class="btn-accion" [disabled]="esInactivo(e)" (click)="asignarTarea(e)">
+                <mat-icon [ngClass]="{ 'icon-muted': esInactivo(e) }">assignment</mat-icon>
+              </button>
+            </span>
+
+            <!-- Eliminar -->
+            <button mat-icon-button matTooltip="Eliminar" class="btn-accion" (click)="eliminar(e)">
+              <mat-icon>delete</mat-icon>
             </button>
           </td>
+
+
+
         </tr>
       </tbody>
     </table>

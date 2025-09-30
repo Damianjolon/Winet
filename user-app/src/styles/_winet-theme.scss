@@ -245,3 +245,68 @@
 /* Botones redondeados coherentes */
 .start-btn{ background: rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); padding:12px 30px; border-radius:30px; color:#fff; text-decoration:none; transition: all .3s ease; }
 .start-btn:hover{ background: rgba(255,255,255,0.4); color:#2c3e50; }
+
+/* === Dialog de éxito en BLANCO con alto contraste === */
+.cdk-overlay-pane.success-dialog-panel .mat-mdc-dialog-container {
+  /* tokens de Material (mdc) para el contenedor */
+  --mdc-dialog-container-color: #ffffff;
+  --mdc-dialog-subhead-color: #111827;
+  --mdc-dialog-supporting-text-color: #374151;
+}
+
+.cdk-overlay-pane.success-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: #ffffff !important;   /* fuerza fondo blanco */
+  color: #111827 !important;        /* texto principal muy oscuro */
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(17, 24, 39, .24);
+}
+
+/* Título y contenido con contraste alto */
+.cdk-overlay-pane.success-dialog-panel .mdc-dialog__title {
+  color: #111827 !important;        /* negro */
+  font-weight: 800;
+}
+
+.cdk-overlay-pane.success-dialog-panel .mdc-dialog__content {
+  color: #374151 !important;        /* gris 700 legible */
+}
+
+/* Botón primario (opcional) más contrastado sobre blanco */
+.cdk-overlay-pane.success-dialog-panel .mdc-button {
+  font-weight: 700;
+}
+/* ===== MatDialog de éxito en BLANCO con alto contraste ===== */
+/* Debe ir DESPUÉS de tus imports de Angular Material/theme */
+
+.cdk-overlay-container .cdk-overlay-pane.success-dialog-panel .mat-mdc-dialog-container {
+  /* tokens de Material (MD3) */
+  --mdc-dialog-container-color: #ffffff;
+  --mdc-dialog-subhead-color: #111827;
+  --mdc-dialog-supporting-text-color: #1f2937;
+}
+
+/* Fuerza el surface blanco y texto oscuro, gane quien gane */
+.cdk-overlay-container .cdk-overlay-pane.success-dialog-panel .mdc-dialog__surface {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(17, 24, 39, .24);
+}
+
+/* Título y contenido con contraste */
+.cdk-overlay-container .cdk-overlay-pane.success-dialog-panel .mdc-dialog__title,
+.cdk-overlay-container .cdk-overlay-pane.success-dialog-panel .mdc-dialog__content {
+  color: #111827 !important;
+}
+
+/* Aún con tema oscuro global activo */
+.dark-theme .cdk-overlay-pane.success-dialog-panel .mdc-dialog__surface,
+body.dark .cdk-overlay-pane.success-dialog-panel .mdc-dialog__surface {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* Botón */
+.cdk-overlay-container .cdk-overlay-pane.success-dialog-panel .mdc-button {
+  font-weight: 700;
+}

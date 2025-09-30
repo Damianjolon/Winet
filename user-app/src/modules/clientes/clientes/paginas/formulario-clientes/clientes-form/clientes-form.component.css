@@ -1,0 +1,185 @@
+/* ====== Vars + layout ====== */
+.app-superficie{
+  --maxw: 1100px;
+
+  /* Marca */
+  --azul-marino: #0b2e5b;
+
+  /* Paleta gris para inputs */
+  --gris-borde: #cbd5e1;        /* base */
+  --gris-hover: #94a3b8;        /* hover */
+  --gris-focus: #64748b;        /* focus */
+  --gris-disabled: #e5e7eb;     /* disabled */
+  --gris-texto: #0f172a;        /* texto input/valor */
+  --gris-label: #334155;        /* label */
+  --gris-placeholder: #64748b;  /* placeholder */
+
+  display:flex; justify-content:center;
+  padding:28px; background:#ffffff;
+}
+
+/* ====== Card principal (adaptado a .tarjeta-glass.card-elevada) ====== */
+.tarjeta-glass.card-elevada{
+  width:100%; max-width:var(--maxw);
+  border-radius:16px; background:#fff;
+  border:1px solid #e5e7eb;
+  box-shadow: 0 24px 48px rgba(2, 6, 23, 0.12), 0 8px 20px rgba(2, 6, 23, 0.08);
+}
+
+/* ====== Encabezado y cuerpo ====== */
+.tarjeta-encabezado{
+  display:flex; align-items:center; gap:14px;
+  padding:20px 24px; border-bottom:1px solid #eef2f7; border-radius:16px 16px 0 0;
+}
+.tarjeta-cuerpo{ padding:20px 24px; border-radius:0 0 16px 16px; }
+.spacer{ flex:1 1 auto; }
+
+/* Icono y título (mantiene tu estilo) */
+.head-icon{
+  width:44px; height:44px; border-radius:12px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--azul-marino); color:#fff; font-size:26px;
+}
+.titulo{
+  margin:0; font-size:1.6rem; font-weight:800; color:var(--azul-marino);
+}
+
+/* ====== Inputs Angular Material (TONOS GRISES) ====== */
+.app-superficie .mat-mdc-form-field{
+  --mdc-outlined-text-field-outline-color: var(--gris-borde);
+  --mdc-outlined-text-field-hover-outline-color: var(--gris-hover);
+  --mdc-outlined-text-field-focus-outline-color: var(--gris-focus);
+  --mdc-outlined-text-field-disabled-outline-color: var(--gris-disabled);
+  --mdc-outlined-text-field-label-text-color: var(--gris-label);
+  --mdc-outlined-text-field-input-text-color: var(--gris-texto);
+  --mdc-outlined-text-field-caret-color: var(--gris-focus);
+  --mdc-theme-primary: var(--gris-focus);
+}
+
+/* Texto / placeholder / labels */
+.app-superficie input.mat-mdc-input-element,
+.app-superficie textarea.mat-mdc-input-element{ color: var(--gris-texto) !important; }
+.app-superficie input::placeholder,
+.app-superficie textarea::placeholder{ color: var(--gris-placeholder); }
+.app-superficie .mdc-floating-label,
+.app-superficie .mdc-floating-label--float-above{ color: var(--gris-label) !important; }
+
+/* ====== FIX de color para mat-select (valor/trigger igual a inputs) ====== */
+.app-superficie .mat-mdc-select-trigger,
+.app-superficie .mat-mdc-select-value,
+.app-superficie .mat-mdc-select-value-text{
+  color: var(--gris-texto) !important;
+}
+.app-superficie .mat-mdc-select-placeholder{ color: var(--gris-placeholder) !important; }
+.app-superficie .mat-mdc-select-panel{ --mdc-theme-primary: var(--gris-focus); }
+.app-superficie .mat-mdc-option .mdc-list-item__primary-text{ color: var(--gris-texto); }
+
+/* Errores */
+.app-superficie .mat-mdc-form-field-error{ color:#b91c1c !important; }
+
+/* ====== Botones (igual estilo del otro form) ====== */
+.btn-primario{
+  background: var(--azul-marino) !important; color:#fff !important; font-weight:800;
+  border-radius:10px !important; box-shadow:0 8px 22px rgba(2,6,23,.18);
+}
+.btn-primario[disabled]{ opacity:.6; box-shadow:none; cursor:not-allowed; }
+
+.btn-cancelar.mat-mdc-raised-button{
+  background:#f1f5f9 !important; color:#0f172a !important;
+  border:1px solid #cbd5e1 !important; border-radius:10px !important;
+  box-shadow:0 6px 16px rgba(15,23,42,.08);
+}
+.btn-cancelar.mat-mdc-raised-button:hover{ background:#e9edf3 !important; }
+
+/* Acciones (usa tu clase .acciones-form) */
+.acciones-form{ display:flex; justify-content:flex-end; gap:12px; }
+
+/* ====== (Opcional) fallback por si el tema ignora vars MDC ====== */
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline .mdc-notched-outline__leading,
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline .mdc-notched-outline__notch,
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline .mdc-notched-outline__trailing{
+  border-color: var(--gris-borde) !important;
+}
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__leading,
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__notch,
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__trailing{
+  border-color: var(--gris-hover) !important;
+}
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__leading,
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__notch,
+:host ::ng-deep .app-superficie .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__trailing{
+  border-color: var(--gris-focus) !important;
+}
+
+/* Formulario ALARGADO (una sola columna que ocupa todo el ancho) */
+.form-largo{
+  display:grid;
+  grid-template-columns: 1fr;   /* 1 columna */
+  gap:16px;
+}
+
+/* Card mantiene su ancho actual */
+.tarjeta-glass.card-elevada{
+  width:100%;
+  max-width: var(--maxw, 1100px);
+}
+
+/* Grid responsive para 3 columnas en md (col-md-4) */
+.form-grid{
+  display:grid;
+  grid-template-columns: 1fr; /* móvil: 1 columna */
+  gap:16px;
+}
+.form-grid mat-form-field{ width:100%; }
+
+/* Utilidades */
+.col-12{ grid-column: span 1; } /* en móvil (1 col) */
+
+@media (min-width: 980px){       /* md breakpoint */
+  .form-grid{
+    grid-template-columns: repeat(12, minmax(0,1fr));
+  }
+  .col-12{ grid-column: span 12; }
+  .col-md-4{ grid-column: span 4; } /* 3 por fila */
+}
+
+/* Altura cómoda sin tocar colores */
+.form-grid .mat-mdc-form-field-infix{
+  padding-top:12px !important;
+  padding-bottom:12px !important;
+}
+
+/* Solo para los selects con class="select-gris" */
+:host ::ng-deep .app-superficie .select-gris {
+  /* Asegura que MDC use texto oscuro dentro del trigger */
+  --mdc-theme-on-surface: var(--gris-texto);
+  --mdc-theme-text-primary-on-background: var(--gris-texto);
+}
+
+:host ::ng-deep .app-superficie .select-gris .mat-mdc-select-trigger,
+:host ::ng-deep .app-superficie .select-gris .mat-mdc-select-value,
+:host ::ng-deep .app-superficie .select-gris .mat-mdc-select-value-text,
+:host ::ng-deep .app-superficie .select-gris .mat-mdc-select-min-line {
+  color: var(--gris-texto) !important;   /* ← texto del valor seleccionado */
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .app-superficie .select-gris .mat-mdc-select-placeholder {
+  color: var(--gris-placeholder) !important;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .app-superficie .select-gris .mat-mdc-select-arrow {
+  color: var(--gris-texto) !important;
+}
+
+/* Panel de opciones (overlay) con la misma gamma gris */
+.select-overlay-gris .mdc-list-item__primary-text { color: var(--gris-texto) !important; }
+.select-overlay-gris .mdc-list-item:hover { background: #f8fafc !important; }
+
+/* Si el campo está inválido, que NO vuelva el texto blanco */
+:host ::ng-deep .app-superficie .mat-mdc-form-field-invalid .select-gris .mat-mdc-select-value-text {
+  color: var(--gris-texto) !important;
+}
+
+

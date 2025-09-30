@@ -82,3 +82,70 @@ exports.getEmpleadoById = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener empleado', error: error.sqlMessage || error.message });
   }
 };
+
+/** ========= EDITAR ========= */
+exports.updateEmpleado = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      primer_nombre,
+      segundo_nombre,
+      primer_apellido,
+      segundo_apellido,
+      DPI,
+      email,
+      puesto,
+      salario,
+      fechaIngreso,
+      telefono,
+      direccion,
+      zona,
+      colonia,
+      id_municipio,
+      estado
+    } = req.body;
+
+    const fecha = toYYYYMMDD(fechaIngreso) || toYYYYMMDD(new Date());
+
+    const [result] = await db.query(
+      `UPDATE TT_EMPLEADOS
+       SET primer_nombre=?, segundo_nombre=?, primer_apellido=?, segundo_apellido=?,
+           DPI=?, correo_electronico=?, puesto=?, salario=?, fecha_ingreso=?, telefono=?,
+           direccion=?, zona=?, colonia=?, id_municipio=?, id_estado=?
+       WHERE id=?`,
+      [
+        primer_nombre, (segundo_nombre ?? null), primer_apellido, (segundo_apellido ?? null),
+        DPI, email, puesto, salario, fecha, (telefono ?? null),
+        (direccion ?? null), (zona ?? null), (colonia ?? null),
+        id_municipio, estado === 'ACTIVO' ? 1 : 2, id
+      ]
+    );
+
+    if (!result.affectedRows) {
+      return res.status(404).json({ ok: false, message: 'Empleado no encontrado' });
+    }
+
+    res.json({ ok: true, message: 'Empleado actualizado correctamente' });
+  } catch (error) {
+    console.error('[updateEmpleado]', error);
+    res.status(500).json({ ok: false, message: 'Error al actualizar empleado', error: error.sqlMessage || error.message });
+  }
+};
+
+/** ========= ELIMINAR ========= */
+exports.deleteEmpleado = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [result] = await db.query(`DELETE FROM TT_EMPLEADOS WHERE id=?`, [id]);
+
+    if (!result.affectedRows) {
+      return res.status(404).json({ ok: false, message: 'Empleado no encontrado' });
+    }
+
+    res.json({ ok: true, message: 'Empleado eliminado correctamente' });
+  } catch (error) {
+    console.error('[deleteEmpleado]', error);
+    res.status(500).json({ ok: false, message: 'Error al eliminar empleado', error: error.sqlMessage || error.message });
+  }
+};
+

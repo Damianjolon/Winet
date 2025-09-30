@@ -1,0 +1,19 @@
+.tabla-clientes .mat-column-acciones { width: 120px; }/* Reutiliza el look del módulo de Usuarios */
+.usuarios-container, .clientes-container { padding: 20px; display: flex; justify-content: center; }
+.card-contenedor { background: #f9f9f9; border-radius: 16px; padding: 30px; width: 100%; max-width: 1100px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.header-flex { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.titulo-seccion { font-size: 24px; font-weight: bold; color: #333; }
+.subtitulo-seccion { font-size: 14px; color: #777; margin: 8px 0 20px 0; }
+.tabla-contenedor { overflow-x: auto; }
+.tabla-estilizada { width: 100%; border-radius: 12px; overflow: hidden; }
+.tabla-estilizada th { background: #009688; color: #fff; font-weight: bold; }
+.tabla-estilizada td { background: #2d2d2d; color: #fff; }
+.btn-accion { color: #b0b0b0 !important; transition: color .2s; }
+.btn-accion:hover { color: #fff !important; }
+.mat-table .mat-cell, .mat-table .mat-header-cell { border-bottom: 1px solid rgba(255,255,255,.05); }
+.mat-column-acciones { border-bottom: none !important; }
+
+/* Snackbars (opcional) */
+.success-snackbar { background: #059669; color:#fff; }
+.error-snackbar { background: #b91c1c; color:#fff; }

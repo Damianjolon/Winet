@@ -1,123 +1,293 @@
-/* Reaprovechamos el look de “Clientes” */
-.clientes-container {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #f6e6d9, #2c3e50);
-  border-radius: 20px;
-  min-height: calc(100vh - 64px);
+/* ====== Vars + layout (mismo look del formulario de Clientes) ====== */
+.clientes-container{
+  --maxw: 1100px;
+
+  /* Marca */
+  --azul-marino: #0b2e5b;
+
+  /* Paleta gris para inputs */
+  --gris-borde: #cbd5e1;        /* base */
+  --gris-hover: #94a3b8;        /* hover */
+  --gris-focus: #64748b;        /* focus */
+  --gris-disabled: #e5e7eb;     /* disabled */
+  --gris-texto: #0f172a;        /* texto input/valor */
+  --gris-label: #334155;        /* label */
+  --gris-placeholder: #64748b;  /* placeholder */
+
+  display:flex; justify-content:center;
+  padding:28px; background:#ffffff;       /* ← sin gradiente, fondo limpio */
+  border-radius:20px; min-height:calc(100vh - 64px);
 }
 
-.clientes-card {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  padding: 30px;
-  width: 100%;
-  max-width: 1200px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  color: #fff;
-  animation: fadeZoom 0.8s ease-in-out;
+/* ====== Card principal (equivalente a .tarjeta-glass.card-elevada) ====== */
+.clientes-card{
+  width:100%; max-width:var(--maxw);
+  border-radius:16px; background:#fff !important;
+  border:1px solid #e5e7eb;
+  backdrop-filter:none; -webkit-backdrop-filter:none;
+  box-shadow: 0 24px 48px rgba(2, 6, 23, 0.12), 0 8px 20px rgba(2, 6, 23, 0.08);
+  color: var(--gris-texto);
+  padding: 24px;
 }
 
-.titulo-clientes {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #34495e; /* título principal en azul gris */
+/* ====== Titulares/encabezados ====== */
+.titulo-clientes{
+  margin:0 0 6px 0;
+  font-size:1.6rem; font-weight:800;
+  color:var(--azul-marino);              /* mismo color del form correcto */
+}
+.subtitulo-clientes{
+  margin:0 0 20px 0;
+  font-size:1rem; color:var(--gris-label);
+  opacity:1;
 }
 
-.subtitulo-clientes {
-  font-size: 1rem;
-  opacity: 0.9;
-  margin-bottom: 25px;
-  color: #34495e; /* subtítulo en azul gris */
+/* ====== Top bar / acciones superiores ====== */
+.top-bar{ display:flex; align-items:center; gap:12px; margin-bottom:12px !important; }
+.spacer{ flex:1 1 auto; }
+
+/* ====== Grid del formulario (respetando tus clases/estructura) ====== */
+.empleado-form-grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr)); /* 2 cols en desktop */
+  gap:16px;
+}
+.col-span-2{ grid-column:1 / -1; }
+
+@media (max-width: 980px){
+  .empleado-form-grid{ grid-template-columns: 1fr; }
+  .col-span-2{ grid-column:auto; }
 }
 
-/* ====== GRID DEL FORM ====== */
-.empleado-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-}
-.col-span-2 { grid-column: 1 / -1; }
-
-/* ====== INPUTS estilo “glass” ====== */
-.input-glass .mat-mdc-form-field-flex,
-.input-glass .mat-mdc-text-field-wrapper {
-  background: rgba(255, 255, 255, 0.20) !important;
-  border-radius: 12px !important;
-  padding: 0 10px !important;
+/* ====== Inputs Angular Material (TONOS GRISES + foco) ====== */
+.clientes-container .mat-mdc-form-field{
+  --mdc-outlined-text-field-outline-color: var(--gris-borde);
+  --mdc-outlined-text-field-hover-outline-color: var(--gris-hover);
+  --mdc-outlined-text-field-focus-outline-color: var(--gris-focus);
+  --mdc-outlined-text-field-disabled-outline-color: var(--gris-disabled);
+  --mdc-outlined-text-field-label-text-color: var(--gris-label);
+  --mdc-outlined-text-field-input-text-color: var(--gris-texto);
+  --mdc-outlined-text-field-caret-color: var(--gris-focus);
+  --mdc-theme-primary: var(--gris-focus);
 }
 
-/* === COLOR GENERAL DE LOS CAMPOS === */
-.input-glass .mat-mdc-floating-label,
-.input-glass .mat-form-field-label {
-  color: #34495e !important;   /* Titulos de los campos */
-  font-weight: 600;
+/* Texto / placeholder / labels */
+.clientes-container input.mat-mdc-input-element,
+.clientes-container textarea.mat-mdc-input-element{ color: var(--gris-texto) !important; }
+.clientes-container input::placeholder,
+.clientes-container textarea::placeholder{ color: var(--gris-placeholder); }
+.clientes-container .mdc-floating-label,
+.clientes-container .mdc-floating-label--float-above{ color: var(--gris-label) !important; }
+
+/* Altura cómoda sin tocar colores */
+.empleado-form-grid .mat-mdc-form-field-infix{
+  padding-top:12px !important;
+  padding-bottom:12px !important;
 }
 
+/* ====== FIX de color para mat-select (valor/trigger igual a inputs) ====== */
+.clientes-container .mat-mdc-select-trigger,
+.clientes-container .mat-mdc-select-value,
+.clientes-container .mat-mdc-select-value-text{
+  color: var(--gris-texto) !important;
+}
+.clientes-container .mat-mdc-select-placeholder{ color: var(--gris-placeholder) !important; }
+.clientes-container .mat-mdc-select-panel{ --mdc-theme-primary: var(--gris-focus); }
+.clientes-container .mat-mdc-option .mdc-list-item__primary-text{ color: var(--gris-texto); }
+.clientes-container .mat-mdc-select-arrow{ color: var(--gris-texto) !important; }
+
+/* Overlay del select (sin tocar tu HTML) */
+:host ::ng-deep .cdk-overlay-pane .mat-mdc-select-panel .mdc-list-item__primary-text{
+  color: var(--gris-texto) !important;
+}
+:host ::ng-deep .cdk-overlay-pane .mat-mdc-select-panel .mdc-list-item:hover{
+  background:#f8fafc !important;
+}
+
+/* Si el campo está inválido, que NO vuelva el texto blanco */
+.clientes-container .mat-mdc-form-field-invalid .mat-mdc-select-value-text{
+  color: var(--gris-texto) !important;
+}
+
+/* Errores */
+.clientes-container .mat-mdc-form-field-error{ color:#b91c1c !important; }
+
+/* ====== (Opcional) fallback si el tema ignora vars MDC ====== */
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline .mdc-notched-outline__leading,
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline .mdc-notched-outline__notch,
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline .mdc-notched-outline__trailing{
+  border-color: var(--gris-borde) !important;
+}
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__leading,
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__notch,
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__trailing{
+  border-color: var(--gris-hover) !important;
+}
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__leading,
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__notch,
+:host ::ng-deep .clientes-container .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__trailing{
+  border-color: var(--gris-focus) !important;
+}
+
+/* ====== “input-glass” adaptado al estilo gris (sin glass) ====== */
+.input-glass .mat-mdc-text-field-wrapper{
+  background:#fff !important;
+  border-radius:12px !important;
+  padding:0 8px !important;
+  box-shadow:none !important;
+}
+.input-glass .mat-mdc-form-field-focus-overlay{ background: transparent !important; }
+
+/* Labels y texto coherentes con la paleta gris */
+.input-glass .mdc-floating-label,
+.input-glass .mat-form-field-label{ color: var(--gris-label) !important; font-weight:600; }
 .input-glass .mdc-text-field__input,
 .input-glass input,
 .input-glass textarea,
-.input-glass .mat-mdc-select-value-text,
-.input-glass .mat-select-value,
-.input-glass .mat-mdc-select-arrow {
-  color: #34495e !important;   /* Texto escrito por el usuario */
-  font-weight: 500;
-}
-
-/* === Placeholders === */
+.input-glass .mat-mdc-select-value-text{ color: var(--gris-texto) !important; font-weight:500; }
 .input-glass input::placeholder,
-.input-glass textarea::placeholder {
-  color: #34495e !important;
-  opacity: 0.7;
+.input-glass textarea::placeholder{ color: var(--gris-placeholder) !important; opacity:1; }
+
+/* Estado de error */
+.input-glass.mat-mdc-form-field-invalid .mat-mdc-form-field-flex{
+  box-shadow:none !important; /* mantenemos el borde rojo por defecto de MDC */
 }
 
-/* === Borde y label al hacer focus === */
-.input-glass.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
-  stroke: #1abc9c !important;  /* borde verde agua */
+/* Hover sutil (como el form correcto) */
+.input-glass .mat-mdc-form-field-flex:hover{
+  box-shadow: inset 0 0 0 1px var(--gris-hover);
+  border-radius:12px;
 }
 
-.input-glass.mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
-  color: #34495e !important;   /* label flotante en azul gris */
-  font-weight: bold;
+/* ====== Botones (equivalentes a .btn-cancelar / .btn-primario) ====== */
+.glass-btn.mat-mdc-stroked-button{
+  background:#f1f5f9 !important; color:#0f172a !important;
+  border:1px solid #cbd5e1 !important; border-radius:10px !important;
+  box-shadow:0 6px 16px rgba(15,23,42,.08);
+}
+.glass-btn.mat-mdc-stroked-button:hover{ background:#e9edf3 !important; }
+
+/* Botón primario (el de guardar tiene clase .add-btn en tu HTML) */
+.add-btn.mat-mdc-raised-button{
+  background: var(--azul-marino) !important; color:#fff !important; font-weight:800;
+  border-radius:10px !important; box-shadow:0 8px 22px rgba(2,6,23,.18);
+}
+.add-btn[disabled]{ opacity:.6; box-shadow:none; cursor:not-allowed; }
+
+/* Contenedor de acciones de formulario */
+.form-actions{ display:flex; justify-content:flex-end; gap:12px; margin-top:6px; }
+/* Encabezado con ícono en azul marino */
+.encabezado-emp{
+  display:flex; align-items:center; gap:14px;
+  margin: 0 0 10px 0;
 }
 
-/* === Opciones del select (Municipio) === */
-::ng-deep .mat-option {
-  color: #34495e !important;
+.head-icon-emp{
+  width:44px; height:44px; border-radius:12px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background: var(--azul-marino);  /* fondo azul marino */
+  color:#fff;                      /* ícono en blanco */
+  font-size:26px;
 }
 
-/* Estado de error en rojo */
-.input-glass.mat-mdc-form-field-invalid .mat-mdc-form-field-flex {
-  box-shadow: inset 0 -2px 0 #f44336 !important;
+/* Si prefieres el ícono solo en azul marino SIN fondo, usa esto en lugar de lo anterior:
+.head-icon-emp{ background:transparent; color:var(--azul-marino); }
+*/
+
+/* === Selects como en el ejemplo (texto oscuro en el valor seleccionado) === */
+/* Activa tema de texto oscuro en el trigger del select solo cuando el control tiene class="select-gris" */
+/* === Forzar texto oscuro en el trigger del mat-select (como el ejemplo) === */
+:host ::ng-deep .select-gris {
+  /* Ayuda a MDC a usar texto oscuro */
+  --mdc-theme-on-surface: #0f172a;
+  --mdc-theme-text-primary-on-background: #0f172a;
 }
 
-/* Hover y focus sutiles */
-.input-glass .mat-mdc-form-field-flex:hover {
-  box-shadow: inset 0 -2px 0 #34495e66 !important;
-}
-.input-glass .mat-mdc-form-field-focus-overlay { background: transparent !important; }
-
-/* Acciones */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 14px;
-  margin-top: 6px;
+/* Valor seleccionado / línea mínima / trigger */
+:host ::ng-deep .select-gris .mat-mdc-select-value,
+:host ::ng-deep .select-gris .mat-mdc-select-value-text,
+:host ::ng-deep .select-gris .mat-mdc-select-trigger,
+:host ::ng-deep .select-gris .mat-mdc-select-min-line {
+  color: #0f172a !important;   /* ← oscuro */
+  opacity: 1 !important;
 }
 
-
-
-/* Animación */
-@keyframes fadeZoom {
-  0% { opacity: 0; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1); }
+/* Placeholder del select */
+:host ::ng-deep .select-gris .mat-mdc-select-placeholder {
+  color: #64748b !important;   /* gris medio */
+  opacity: 1 !important;
 }
 
-/* Responsive */
-@media (max-width: 800px){
-  .empleado-form-grid { grid-template-columns: 1fr; }
+/* Flecha del select */
+:host ::ng-deep .select-gris .mat-mdc-select-arrow {
+  color: #0f172a !important;
+}
+
+/* Mantener oscuro aunque el campo esté inválido (required sin seleccionar) */
+:host ::ng-deep .mat-mdc-form-field-invalid .select-gris .mat-mdc-select-value,
+:host ::ng-deep .mat-mdc-form-field-invalid .select-gris .mat-mdc-select-value-text {
+  color: #0f172a !important;
+}
+
+/* Deshabilitado: un poco más tenue */
+:host ::ng-deep .mat-mdc-form-field-disabled .select-gris .mat-mdc-select-value-text {
+  color: #94a3b8 !important;
+}
+
+/* === Overlay del panel de opciones (panelClass="select-overlay-gris") === */
+:host ::ng-deep .select-overlay-gris .mdc-list-item__primary-text,
+:host ::ng-deep .select-overlay-gris .mat-mdc-option .mdc-list-item__primary-text {
+  color: #0f172a !important;   /* texto opción en oscuro */
+}
+:host ::ng-deep .select-overlay-gris .mdc-list-item:hover,
+:host ::ng-deep .select-overlay-gris .mat-mdc-option.mdc-list-item:hover {
+  background: #f8fafc !important;
+}
+
+/* (Opcional) color de foco del panel coherente con tu paleta */
+:host ::ng-deep .mat-mdc-select-panel {
+  --mdc-theme-primary: #64748b; /* gris-focus */
+}
+
+/* Cancelar: texto y borde azul marino, fondo transparente */
+.btn-cancelar.mat-mdc-stroked-button,
+.btn-cancelar.mat-mdc-outlined-button{
+  background: transparent !important;
+  color: var(--azul-marino) !important;
+  border-style: solid !important;      /* fuerza borde */
+  border-width: 1px !important;
+  border-color: var(--azul-marino) !important;
+
+  /* MDC (Angular Material) usa esta var para el borde del outlined */
+  --mdc-outlined-button-outline-color: var(--azul-marino);
+  --mdc-outlined-button-disabled-outline-color: color-mix(in srgb, var(--azul-marino) 40%, transparent);
+}
+
+/* Compatibilidad con versiones que usan el elemento .mdc-button__outline */
+.btn-cancelar.mat-mdc-stroked-button .mdc-button__outline,
+.btn-cancelar.mat-mdc-outlined-button .mdc-button__outline{
+  border-color: var(--azul-marino) !important;
+}
+
+/* Icono/label también en azul */
+.btn-cancelar .mdc-button__label,
+.btn-cancelar mat-icon{ color: var(--azul-marino) !important; }
+
+/* Hover: sin relleno */
+.btn-cancelar.mat-mdc-stroked-button:hover,
+.btn-cancelar.mat-mdc-outlined-button:hover{
+  background: transparent !important;
+}
+/* Cancelar: mismo radio que el botón Guardar (10px) */
+.btn-cancelar.mat-mdc-stroked-button,
+.btn-cancelar.mat-mdc-outlined-button{
+  border-radius: 10px !important;      /* ← redondeo */
+  padding: 0 16px;                      /* igual separación */
+}
+
+/* Asegura que el borde y ripple sigan el mismo radio */
+.btn-cancelar .mdc-button__outline,
+.btn-cancelar .mdc-button__ripple,
+.btn-cancelar .mat-mdc-button-touch-target{
+  border-radius: 10px !important;
 }

@@ -1,40 +1,107 @@
+<!-- tareas-asignar.component.html -->
 <section class="app-superficie">
-<div class="tarjeta-glass">
-<div class="tarjeta-encabezado">
-<mat-icon>assignment_ind</mat-icon>
-<h3 style="margin:0">Asignar tarea a empleado #{{ idEmpleado }}</h3>
-</div>
-<div class="tarjeta-cuerpo">
-<form [formGroup]="form" (ngSubmit)="asignar()" class="grid-form">
-<mat-form-field appearance="fill" class="input-oscuro">
-<mat-label>Título</mat-label>
-<input matInput formControlName="titulo" />
-</mat-form-field>
-<mat-form-field appearance="fill" class="input-oscuro">
-<mat-label>Descripción</mat-label>
-<textarea matInput rows="3" formControlName="descripcion"></textarea>
-</mat-form-field>
-<mat-form-field appearance="fill" class="input-oscuro">
-<mat-label>Prioridad</mat-label>
-<mat-select formControlName="prioridad">
-<mat-option value="BAJA">Baja</mat-option>
-<mat-option value="MEDIA">Media</mat-option>
-<mat-option value="ALTA">Alta</mat-option>
-</mat-select>
-</mat-form-field>
-<mat-form-field appearance="fill" class="input-oscuro">
-<mat-label>Fecha</mat-label>
-<input matInput [matDatepicker]="dp" formControlName="fecha" />
-<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-<mat-datepicker #dp></mat-datepicker>
-</mat-form-field>
-<div class="acciones">
-<button mat-stroked-button class="btn-fantasma" routerLink="/empleados/tareas">Cancelar</button>
-<button mat-raised-button class="btn-primario" type="submit" [disabled]="form.invalid">
-<mat-icon>send</mat-icon> Asignar
-</button>
-</div>
+  <div class="card-elevada tarjeta">
+    <!-- Encabezado -->
+    <div class="tarjeta-encabezado">
+      <mat-icon class="head-icon">assignment</mat-icon>
+
+      <div class="head-textos">
+        <h2>Asignar tarea</h2>
+        <p class="texto-muted" *ngIf="empleado; else cargando">
+          Para: <strong>{{ nombreCompleto }}</strong>
+        </p>
+        <ng-template #cargando>
+          <p class="texto-muted">Cargando empleado…</p>
+        </ng-template>
+      </div>
+
+      <span class="spacer"></span>
+
+      <button
+        type="button"
+        mat-raised-button
+        class="btn-secundario"
+        [disabled]="!empleado"
+        (click)="verAsignaciones()"
+        matTooltip="Ver tareas asignadas del día para este usuario">
+        <mat-icon>list_alt</mat-icon>
+        Ver asignaciones
+      </button>
+    </div>
+
+    <!-- Banner informativo -->
+    <div *ngIf="bloqueado" class="alerta-inactivo">
+      <mat-icon>block</mat-icon>
+      Este empleado está <strong>INACTIVO</strong>. No se pueden asignar tareas.
+    </div>
+
+    <!-- Cuerpo -->
+    <div class="tarjeta-cuerpo" *ngIf="empleado; else cargando2">
+    <form [formGroup]="form" (ngSubmit)="asignar()" class="tarea-form-grid" autocomplete="off">
+
+  <!-- Título -->
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Título</mat-label>
+    <input matInput formControlName="titulo" [matAutocomplete]="auto" />
+    <mat-error *ngIf="form.get('titulo')?.hasError('required')">
+      El título es obligatorio
+    </mat-error>
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let t of commonTitles" [value]="t">{{ t }}</mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <br class="br-form" />
+
+  <!-- Descripción -->
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Descripción</mat-label>
+    <textarea matInput rows="5" formControlName="descripcion"></textarea>
+  </mat-form-field>
+
+  <br class="br-form" />
+
+  <!-- Prioridad -->
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Prioridad</mat-label>
+    <mat-select formControlName="prioridad" [compareWith]="comparePrioridad">
+      <mat-option value="BAJA">Baja</mat-option>
+      <mat-option value="MEDIA">Media</mat-option>
+      <mat-option value="ALTA">Alta</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <br class="br-form" />
+
+  <!-- Fecha -->
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Fecha</mat-label>
+    <input matInput [matDatepicker]="dp" formControlName="fecha" />
+    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+    <mat-datepicker #dp></mat-datepicker>
+    <mat-error *ngIf="form.get('fecha')?.hasError('required')">
+      La fecha es obligatoria
+    </mat-error>
+  </mat-form-field>
+
+  <br class="br-form" />
+
+  <!-- Acciones -->
+  <div class="acciones">
+    <button type="button" mat-raised-button class="btn-secundario" routerLink="/empleados">
+      Cancelar
+    </button>
+    <button type="submit" mat-raised-button class="btn-primario" [disabled]="form.invalid || bloqueado">
+      <mat-icon>send</mat-icon>
+      Asignar
+    </button>
+  </div>
 </form>
-</div>
-</div>
+
+    </div>
+
+    <ng-template #cargando2>
+      <div class="texto-muted" style="padding:16px">Cargando…</div>
+    </ng-template>
+  </div>
 </section>

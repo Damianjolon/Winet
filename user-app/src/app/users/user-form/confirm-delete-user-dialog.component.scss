@@ -1,0 +1,22 @@
+/* Contenido */
+:host { color:#111827; }
+.dialog-wrap { display:grid; justify-items:center; text-align:center; padding:20px 18px 16px; gap:14px; }
+.warn-icon { font-size:60px; width:60px; height:60px; color:#dc2626; }
+.title { margin:0; font-weight:800; color:#111827; }
+.subtitle { margin:0; color:#374151; }
+.details { display:grid; grid-template-columns:24px 1fr; align-items:center; gap:8px; }
+.line-icon { font-size:20px; width:20px; height:20px; color:#64748b; }
+.value { color:#111827; }
+.actions { margin-top:12px; display:flex; gap:10px; justify-content:center; }
+
+/* Fuerza BLANCO/NEGRO solo para este diálogo */
+:host ::ng-deep .cdk-overlay-pane.dlg-confirm-delete-white > .mat-mdc-dialog-container .mdc-dialog__surface {
+  background:#ffffff !important;
+  color:#111827 !important;
+  border-radius:16px;
+  box-shadow:0 24px 48px rgba(17,24,39,.24);
+}
+:host ::ng-deep .cdk-overlay-pane.dlg-confirm-delete-white .mdc-dialog__title,
+:host ::ng-deep .cdk-overlay-pane.dlg-confirm-delete-white .mdc-dialog__content {
+  color:#111827 !important;
+}

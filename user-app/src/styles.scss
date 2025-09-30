@@ -34,3 +34,39 @@ mat-toolbar {
   color: white;
 }
 
+::ng-deep .mat-mdc-table-sticky-border-elem-bottom,
+::ng-deep .mat-mdc-table [class*="sticky-border-elem-bottom"],
+::ng-deep .mdc-data-table__header-row::after,
+::ng-deep .mat-mdc-header-row::after,
+::ng-deep .mat-mdc-table-sticky-border-elem-right,
+::ng-deep .mat-mdc-table-sticky-border-elem-left,
+::ng-deep .mat-mdc-table-sticky-border-elem-top,
+::ng-deep .mdc-data-table__cell::before,
+::ng-deep .mat-mdc-cell::before,
+::ng-deep .mat-mdc-header-cell::before {
+  display: none !important;
+  content: none !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  background: transparent !important;
+}
+
+:root { --header-azul: #486284; } /* mismo azul del encabezado */
+
+.mat-mdc-table-sticky-border-elem-bottom {
+  background: var(--header-azul) !important; /* pinta la línea */
+  height: 1px !important;                    /* 0 si quieres ocultarla */
+  box-shadow: none !important;
+}
+
+.mdc-data-table__header-row::after,
+.mat-mdc-header-row::after{
+  background: var(--header-azul) !important; /* por si el tema usa este pseudo-elemento */
+  height: 1px !important;
+}
+
+/* si también ves una línea vertical en la última columna (sticky) */
+.mat-mdc-table-sticky-border-elem-right{
+  background: var(--header-azul) !important;
+  width: 1px !important;  /* 0 para ocultarla */
+}

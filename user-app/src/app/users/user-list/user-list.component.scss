@@ -52,12 +52,66 @@
   color: #fff;
 }
 
-.activo {
-  color: #4caf50;
+/* Estados como chips */
+.estado-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px; /* forma de pastilla */
+  font-size: 12px;
   font-weight: bold;
+  text-transform: uppercase;
 }
 
-.inactivo {
-  color: #f44336;
-  font-weight: bold;
+.estado-activo {
+  background-color: #d0f5e6; /* verde claro */
+  color: #1b5e20;            /* verde oscuro */
+}
+
+.estado-inactivo {
+  background-color: #f8d7da; /* rojo claro */
+  color: #b71c1c;            /* rojo oscuro */
+}
+
+/* Botones grises */
+.btn-accion {
+  color: #b0b0b0 !important;
+  transition: color 0.2s ease-in-out;
+}
+
+.btn-accion:hover {
+  color: #ffffff !important;
+}
+
+/* Líneas suaves para la tabla */
+.mat-table .mat-cell,
+.mat-table .mat-header-cell {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Quitar línea SOLO en la columna de acciones */
+.mat-column-acciones {
+  border-bottom: none !important;
+}
+
+/* Mostrar \n como saltos de línea en todos los snackbars */
+.success-snackbar,
+.error-snackbar,
+.confirm-snackbar {
+  white-space: pre-line;
+  letter-spacing: .2px;
+}
+
+/* Confirmación clara (fondo blanco) y acción visible */
+.confirm-snackbar {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 16px rgba(17,24,39,.15);
+}
+
+/* Color del botón de acción "Eliminar" dentro del snackbar de confirmación */
+.confirm-snackbar .mat-mdc-snack-bar-action {
+  color: #dc2626 !important;      /* rojo visible */
+  font-weight: 800;
+  text-transform: none;
 }

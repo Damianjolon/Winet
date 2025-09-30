@@ -1,0 +1,71 @@
+<!-- <section class="app-superficie tareas-contrast">
+  <div class="tarjeta-encabezado" style="gap:12px; flex-wrap:wrap;">
+    <mat-icon class="head-icon">view_kanban</mat-icon>
+    <h3 class="titulo">Tablero general de tareas</h3>
+    <span class="spacer"></span>
+
+    <mat-form-field appearance="fill" style="width: 160px;">
+      <mat-label>Desde</mat-label>
+      <input matInput [(ngModel)]="filtros.desde" placeholder="YYYY-MM-DD">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 160px;">
+      <mat-label>Hasta</mat-label>
+      <input matInput [(ngModel)]="filtros.hasta" placeholder="YYYY-MM-DD">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 180px;">
+      <mat-label>Estado</mat-label>
+      <mat-select [(ngModel)]="filtros.estado">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="PENDIENTE">Pendiente</mat-option>
+        <mat-option value="EN_PROCESO">En proceso</mat-option>
+        <mat-option value="COMPLETADA">Completada</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 220px;">
+      <mat-label>Buscar</mat-label>
+      <input matInput [(ngModel)]="filtros.q" placeholder="título/desc/empleado">
+    </mat-form-field>
+
+    <button mat-stroked-button class="btn-fantasma" (click)="buscar()">
+      <mat-icon>search</mat-icon> Filtrar
+    </button>
+  </div>
+
+  <div class="tarjeta-cuerpo tablero">
+    <div class="col">
+      <h4>Pendiente</h4>
+      <div *ngIf="!pendientes.length && !cargando" class="texto-muted">—</div>
+      <div class="pill" *ngFor="let t of pendientes">
+        <div class="pill-title">{{ t.titulo }}</div>
+        <div class="pill-sub">{{ t.empleado }}</div>
+        <div class="pill-desc" *ngIf="t.descripcion">{{ t.descripcion }}</div>
+        <div class="pill-meta">{{ t.fecha }} · {{ t.hora }}</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h4>En proceso</h4>
+      <div *ngIf="!enProceso.length && !cargando" class="texto-muted">—</div>
+      <div class="pill" *ngFor="let t of enProceso">
+        <div class="pill-title">{{ t.titulo }}</div>
+        <div class="pill-sub">{{ t.empleado }}</div>
+        <div class="pill-desc" *ngIf="t.descripcion">{{ t.descripcion }}</div>
+        <div class="pill-meta">{{ t.fecha }} · {{ t.hora }}</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h4>Completadas</h4>
+      <div *ngIf="!completadas.length && !cargando" class="texto-muted">—</div>
+      <div class="pill hecho" *ngFor="let t of completadas">
+        <div class="pill-title">{{ t.titulo }}</div>
+        <div class="pill-sub">{{ t.empleado }}</div>
+        <div class="pill-desc" *ngIf="t.descripcion">{{ t.descripcion }}</div>
+        <div class="pill-meta">{{ t.fecha }} · {{ t.hora }}</div>
+      </div>
+    </div>
+  </div>
+</section> -->

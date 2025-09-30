@@ -1,14 +1,13 @@
+// src/app/.../empleados.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Empleado, Tarea } from './modelos';
+import { environment } from '../../app/environments/environment';
 
-/** Tipos auxiliares que usa el formulario */
-export interface Municipio {
-  id: number;
-  nombre: string;
-}
+export interface Departamento { id: number; nombre: string; }
+export interface Municipio { id: number; nombre: string; id_departamento?: number; }
 
 export interface EmpleadoCreate {
   id?: number;
@@ -19,96 +18,99 @@ export interface EmpleadoCreate {
   DPI: string;
   puesto: string;
   salario: number;
-  fecha_ingreso: string;     // yyyy-MM-dd (input type="date")
+  fecha_ingreso: string;
   telefono?: string;
   direccion?: string;
   zona?: string;
   colonia?: string;
+  ubicacion?: string;
   id_municipio: number;
-  id_estado: string;         // 'ACTIVO' al crear
+  id_estado: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class EmpleadosService {
-  /** Ajusta a tu backend (o usa environment.apiUrl) */
-  private base = 'http://localhost:3001/api/empleados';
-  private municipiosBase = '/api/municipios';
-  actualizarEmpleado: any;
+  /** Usa environment. Ej: 'http://localhost:3001/api'. Si usas proxy, pon '/api'. */
+  private api = environment.apiUrl || '/api';
+
+  /** Endpoints base */
+  private empleadosBase     = `${this.api}/empleados`;
+  private departamentosBase = `${this.api}/departamentos`;
+  private municipiosBase    = `${this.api}/municipios`;
 
   constructor(private http: HttpClient) {}
 
-  /* ================== EMPLEADOS (listado demo) ================== */
+  /* ===== Normalizadores ===== */
+  private normDep = (r: any): Departamento =>
+    ({ id: r.id ?? r.ID ?? r.id_departamento ?? r.ID_DEPARTAMENTO, nombre: r.nombre ?? r.NOMBRE });
 
-listar(): Observable<Empleado[]> {
-  return this.http.get<Empleado[]>(`${this.base}/listar`)
-    .pipe(catchError(this.handle));
-}
+  private normMun = (r: any, depId?: number): Municipio =>
+    ({ id: r.id ?? r.ID ?? r.id_municipio ?? r.ID_MUNICIPIO,
+       nombre: r.nombre ?? r.NOMBRE,
+       id_departamento: r.id_departamento ?? r.ID_DEPARTAMENTO ?? depId });
 
-  obtener(id:number): Observable<Empleado> {
-    // return this.http.get<Empleado>(`${this.base}/${id}`)
-    return of({ id, primer_nombre:'Demo', primer_apellido:'User', email:'demo@acme.com', puesto:'Soporte', estado:'ACTIVO' } as Empleado);
+  /* ===== Empleados ===== */
+  listar(): Observable<Empleado[]> {
+    return this.http.get<Empleado[]>(`${this.empleadosBase}/listar`).pipe(catchError(this.handle));
   }
 
-  /** Crear (legacy). Lo dejo para compatibilidad con tu código actual. */
+  obtenerPorId(id: number) {
+    return this.listar().pipe(map((xs: any[]) => xs.find(e => e.id === id)));
+  }
+
+  obtener(id: number): Observable<Empleado> {
+    // Cambia a tu endpoint real si ya existe:
+    // return this.http.get<Empleado>(`${this.empleadosBase}/${id}`).pipe(catchError(this.handle));
+    return of({ id, primer_nombre: 'Demo', primer_apellido: 'User', email: 'demo@acme.com', puesto: 'Soporte', estado: 'ACTIVO' } as Empleado);
+  }
+
   crear(dto: Partial<Empleado> | EmpleadoCreate): Observable<any> {
-    // return this.http.post(this.base, dto).pipe(catchError(this.handle));
+    // return this.http.post(this.empleadosBase, dto).pipe(catchError(this.handle));
     return of(true);
   }
+  crearEmpleado(body: EmpleadoCreate) { return this.crear(body); }
 
-  actualizar(id:number, dto: Partial<Empleado> | EmpleadoCreate): Observable<any> {
-    // return this.http.put(`${this.base}/${id}`, dto).pipe(catchError(this.handle));
-    return of(true);
+  actualizar(id: number, body: Partial<Empleado>) {
+    return this.http.put(`${this.empleadosBase}/cambiar/${id}`, body).pipe(catchError(this.handle));
+  }
+  eliminar(id: number) {
+    return this.http.delete(`${this.empleadosBase}/eliminar/${id}`).pipe(catchError(this.handle));
   }
 
-  eliminar(id:number): Observable<any> {
-    // return this.http.delete(`${this.base}/${id}`).pipe(catchError(this.handle));
-    return of(true);
+  /* ===== Catálogos ===== */
+  listarDepartamentos(): Observable<Departamento[]> {
+    return this.http.get<any[]>(this.departamentosBase).pipe(
+      map(rows => (rows || []).map(this.normDep)), catchError(this.handle)
+    );
   }
-
-  /* ================== ALIAS coherente para el form ================== */
-
-  /**
-   * crearEmpleado: alias explícito para el formulario de creación.
-   * Internamente llama a `crear(...)` para no romper compatibilidad.
-   */
-  crearEmpleado(body: EmpleadoCreate): Observable<any> {
-    // Si prefieres pegar directo al backend, descomenta:
-    // return this.http.post(`${this.base}`, body).pipe(catchError(this.handle));
-    return this.crear(body);
-  }
-
-  /* ================== MUNICIPIOS (dinámico) ================== */
 
   listarMunicipios(): Observable<Municipio[]> {
-    // Llama a la API real:
-    // return this.http.get<Municipio[]>(this.municipiosBase).pipe(catchError(this.handle));
-
-    // Fallback demo (elimínalo cuando tengas backend):
-    return of<Municipio[]>([
-      { id: 1, nombre: 'Guatemala' },
-      { id: 2, nombre: 'Mixco' },
-      { id: 3, nombre: 'Villa Nueva' },
-      { id: 4, nombre: 'Santa Catarina Pinula' },
-    ]);
+    return this.http.get<any[]>(this.municipiosBase).pipe(
+      map(rows => (rows || []).map(this.normMun)), catchError(() => of([]))
+    );
   }
 
-  /* ================== TAREAS (stubs) ================== */
+  listarMunicipiosPorDepartamento(depId: number): Observable<Municipio[]> {
+    // Enviamos dos nombres de parámetro por compatibilidad (ajusta si tu backend usa solo uno).
+    const params = new HttpParams()
+      .set('departamentoId', String(depId))
+      .set('id_departamento', String(depId));
 
-  listarTareas(): Observable<Tarea[]> { return of([]); }
-  listarTareasPorEmpleado(id:number): Observable<Tarea[]> { return of([]); }
-  asignarTarea(t:Partial<Tarea>): Observable<any> { return of(true); }
+    return this.http.get<any[]>(this.municipiosBase, { params }).pipe(
+      map(rows => (rows || []).map(r => this.normMun(r, depId))),
+      // Fallback si el backend ignora el query param:
+      catchError(() =>
+        this.listarMunicipios().pipe(
+          map(ms => ms.filter(m => Number(m.id_departamento) === Number(depId)))
+        )
+      )
+    );
+  }
 
+  listarEstados(): Observable<{ id: number, nombre: string }[]> {
+    return this.http.get<{ id: number, nombre: string }[]>(`${this.api}/estados`).pipe(catchError(this.handle));
+  }
 
-listarEstados(): Observable<{ id: number, nombre: string }[]> {
-  return this.http.get<{ id: number, nombre: string }[]>(`/api/estados`)
-    .pipe(catchError(this.handle));
-}
-
-
-  /* ================== Manejo de errores ================== */
-
-  private handle = (err: any) => {
-    console.error('[EmpleadosService]', err);
-    return throwError(() => err);
-  };
+  /* ===== Errores ===== */
+  private handle = (err: any) => { console.error('[EmpleadosService]', err); return throwError(() => err); };
 }

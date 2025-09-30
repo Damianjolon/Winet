@@ -54,16 +54,16 @@
       </mat-form-field>
 
 
-       <!-- Acceso a Módulos -->
-          <mat-card class="sub-card">
-      <mat-card-title class="sub-card-title">Acceso a Módulos</mat-card-title>
-      <div class="checkbox-list">
-        <mat-checkbox *ngFor="let modulo of modulos"
-                  (change)="toggleModulo(modulo.id, $event.checked)">
+<mat-card class="sub-card">
+  <mat-card-title class="sub-card-title">Acceso a Módulos</mat-card-title>
+  <div class="checkbox-list">
+    <mat-checkbox
+      *ngFor="let modulo of modulos; trackBy: trackByModulo"
+      [checked]="isModuloSeleccionado(modulo.id)"
+      (change)="toggleModulo(modulo.id, $event.checked)">
       {{ modulo.nombre || '⚠️ Sin nombre' }}
     </mat-checkbox>
 
-    <!-- 👇 Mostrar mensaje si no hay módulos -->
     <p *ngIf="modulos.length === 0" class="empty-msg">
       No hay módulos disponibles
     </p>
@@ -71,7 +71,7 @@
 </mat-card>
 
 <!-- Permisos -->
-<mat-card class="sub-card">
+<mat-card class="sub-carD">
   <mat-card-title class="sub-card-title">Acciones Permitidas</mat-card-title>
   <div class="checkbox-list">
     <mat-checkbox *ngFor="let permiso of permisos"
@@ -79,7 +79,7 @@
       {{ permiso.nombre || '⚠️ Sin nombre' }}
     </mat-checkbox>
 
-    <!-- 👇 Mostrar mensaje si no hay permisos -->
+
     <p *ngIf="permisos.length === 0" class="empty-msg">
       No hay permisos disponibles
     </p>
@@ -87,14 +87,15 @@
 </mat-card>
 
         <!-- Botones -->
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="userForm.invalid">
-            Guardar
-          </button>
-          <button mat-raised-button color="warn" type="button">
-            Cancelar
-          </button>
-        </div>
+<div class="form-actions">
+  <button mat-raised-button color="primary" type="submit" [disabled]="userForm.invalid">
+    Guardar
+  </button>
+  <button mat-raised-button color="warn" type="button" (click)="cancelar()">
+    Cancelar
+  </button>
+</div>
+
 
       </form>
     </mat-card-content>

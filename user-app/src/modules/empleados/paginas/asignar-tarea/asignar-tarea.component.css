@@ -1,3 +1,112 @@
-.grid-form { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.acciones { display:flex; gap:10px; justify-content:flex-end; margin-top: 10px; }
-@media (max-width: 768px) { .grid-form { grid-template-columns: 1fr; } }
+/* tareas-asignar.component.scss */
+
+/* ====== Vars + layout ====== */
+.app-superficie{
+  --maxw: 1100px;
+
+  /* Marca */
+  --azul-marino: #0b2e5b;
+
+  /* Paleta gris para inputs */
+  --gris-borde: #cbd5e1;        /* base */
+  --gris-hover: #94a3b8;        /* hover */
+  --gris-focus: #64748b;        /* focus */
+  --gris-disabled: #e5e7eb;     /* disabled */
+  --gris-texto: #0f172a;        /* texto input/valor */
+  --gris-label: #334155;        /* label */
+  --gris-placeholder: #64748b;  /* placeholder */
+
+  display:flex; justify-content:center;
+  padding:28px; background:#ffffff;
+}
+
+/* Card principal con sombra */
+.tarjeta{
+  width:100%; max-width:var(--maxw);
+  border-radius:16px; background:#fff;
+  border:1px solid #e5e7eb;
+  box-shadow: 0 24px 48px rgba(2, 6, 23, 0.12), 0 8px 20px rgba(2, 6, 23, 0.08);
+}
+
+/* Encabezado y cuerpo */
+.tarjeta-encabezado{
+  display:flex; align-items:center; gap:14px;
+  padding:20px 24px; border-bottom:1px solid #eef2f7; border-radius:16px 16px 0 0;
+}
+.tarjeta-cuerpo{ padding:20px 24px; border-radius:0 0 16px 16px; }
+.spacer{ flex:1 1 auto; }
+
+/* Icono y textos */
+.head-icon{
+  width:44px; height:44px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--azul-marino); color:#fff; font-size:26px;
+}
+.tarjeta-encabezado h2{ margin:0; font-size:1.6rem; font-weight:800; color:var(--azul-marino); }
+.texto-muted{ margin:0; color:#475569; }
+
+/* Banner inactivo */
+.alerta-inactivo{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 16px; margin:12px 24px 0; background:#fef2f2; color:#7f1d1d;
+  border:1px solid #fecaca; border-radius:10px;
+}
+
+/* Orden vertical (solo saltos de línea) */
+.tarea-form-grid{ display:block; }
+.tarea-form-grid .field, .tarea-form-grid mat-form-field{ width:100%; }
+.br-form{ display:block; height:16px; }
+
+/* ====== Inputs Angular Material (TONOS GRISES) ====== */
+.app-superficie .mat-mdc-form-field{
+  --mdc-outlined-text-field-outline-color: var(--gris-borde);
+  --mdc-outlined-text-field-hover-outline-color: var(--gris-hover);
+  --mdc-outlined-text-field-focus-outline-color: var(--gris-focus);
+  --mdc-outlined-text-field-disabled-outline-color: var(--gris-disabled);
+  --mdc-outlined-text-field-label-text-color: var(--gris-label);
+  --mdc-outlined-text-field-input-text-color: var(--gris-texto);
+  --mdc-outlined-text-field-caret-color: var(--gris-focus);
+  --mdc-theme-primary: var(--gris-focus);
+}
+
+/* Texto/placeholder y labels */
+.app-superficie input.mat-mdc-input-element,
+.app-superficie textarea.mat-mdc-input-element{ color: var(--gris-texto) !important; }
+.app-superficie input::placeholder,
+.app-superficie textarea::placeholder{ color: var(--gris-placeholder); }
+.app-superficie .mdc-floating-label,
+.app-superficie .mdc-floating-label--float-above{ color: var(--gris-label) !important; }
+
+/* ====== FIX de color para mat-select (valor/trigger igual a inputs) ====== */
+.app-superficie .mat-mdc-select-trigger,
+.app-superficie .mat-mdc-select-value,
+.app-superficie .mat-mdc-select-value-text{
+  color: var(--gris-label) !important;     /* mismo color que título/descripcion */
+}
+
+/* Placeholder del select */
+.app-superficie .mat-mdc-select-placeholder{ color: var(--gris-placeholder) !important; }
+
+/* Panel del select con la misma gamma (evita magenta por tema) */
+.app-superficie .mat-mdc-select-panel{ --mdc-theme-primary: var(--gris-focus); }
+
+/* Opciones del panel (texto legible) */
+.app-superficie .mat-mdc-option .mdc-list-item__primary-text{ color: var(--gris-label); }
+
+/* Errores */
+.app-superficie .mat-mdc-form-field-error{ color:#b91c1c !important; }
+
+/* Botones */
+.btn-primario{
+  background: var(--azul-marino) !important; color:#fff !important; font-weight:800;
+  border-radius:10px !important; box-shadow:0 8px 22px rgba(2,6,23,.18);
+}
+.btn-primario[disabled]{ opacity:.6; box-shadow:none; cursor:not-allowed; }
+
+.btn-secundario.mat-mdc-raised-button{
+  background:#f1f5f9 !important; color:#0f172a !important;
+  border:1px solid #cbd5e1 !important; border-radius:10px !important;
+  box-shadow:0 6px 16px rgba(15,23,42,.08);
+}
+.btn-secundario.mat-mdc-raised-button:hover{ background:#e9edf3 !important; }
+
+.acciones{ display:flex; justify-content:flex-end; gap:12px; }

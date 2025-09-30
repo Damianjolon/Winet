@@ -1,7 +1,17 @@
 <div class="clientes-container">
   <div class="clientes-card">
-    <h2 class="titulo-clientes">{{ titulo || 'Nuevo empleado' }}</h2>
-    <p class="subtitulo-clientes">Complete la información del empleado</p>
+    <div class="encabezado-emp">
+      <mat-icon class="head-icon-emp">
+        {{ isEdit ? 'edit' : 'person_add' }}
+      </mat-icon>
+
+      <div>
+        <h2 class="titulo-clientes">
+          {{ titulo || (isEdit ? 'Editar empleado' : 'Nuevo empleado') }}
+        </h2>
+        <p class="subtitulo-clientes">Complete la información del empleado</p>
+      </div>
+    </div>
 
     <!-- Toolbar mínima opcional (puedes quitarla si no quieres nada arriba) -->
     <div class="top-bar" style="margin-bottom: 10px;">
@@ -23,7 +33,7 @@
 
       <!-- Nombres y apellidos -->
       <mat-form-field appearance="outline" class="input-glass">
-        <mat-label>Primer nombre*</mat-label>
+        <mat-label>Primer nombre</mat-label>
         <input matInput formControlName="primer_nombre" required />
       </mat-form-field>
 
@@ -33,7 +43,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="input-glass">
-        <mat-label>Primer apellido*</mat-label>
+        <mat-label>Primer apellido</mat-label>
         <input matInput formControlName="primer_apellido" required />
       </mat-form-field>
 
@@ -44,23 +54,23 @@
 
       <!-- DPI, Puesto -->
       <mat-form-field appearance="outline" class="input-glass">
-        <mat-label>DPI*</mat-label>
+        <mat-label>DPI</mat-label>
         <input matInput formControlName="DPI" required />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="input-glass">
-        <mat-label>Puesto*</mat-label>
+        <mat-label>Puesto</mat-label>
         <input matInput formControlName="puesto" required />
       </mat-form-field>
 
       <!-- Salario, Fecha de ingreso -->
       <mat-form-field appearance="outline" class="input-glass">
-        <mat-label>Salario (Q)*</mat-label>
+        <mat-label>Salario (Q)</mat-label>
         <input matInput type="number" step="0.01" formControlName="salario" required />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="input-glass">
-        <mat-label>Fecha de ingreso*</mat-label>
+        <mat-label>Fecha de ingreso</mat-label>
         <input matInput type="date" formControlName="fecha_ingreso" required />
       </mat-form-field>
 
@@ -87,18 +97,37 @@
         <input matInput formControlName="colonia" />
       </mat-form-field>
 
-      <!-- Municipio dinámico -->
+      <!-- Ubicación -->
       <mat-form-field appearance="outline" class="input-glass">
-        <mat-label>Municipio*</mat-label>
-        <mat-select formControlName="id_municipio" required>
-          <mat-option *ngFor="let m of municipios" [value]="m.id">{{ m.nombre }}</mat-option>
-          <mat-option *ngIf="!municipios || municipios.length === 0" [disabled]="true">Sin datos</mat-option>
+        <mat-label>Ubicación</mat-label>
+        <input matInput formControlName="ubicacion" />
+      </mat-form-field>
+
+      <!-- Departamento -->
+      <mat-form-field appearance="outline" class="input-glass">
+        <mat-label>Departamento</mat-label>
+        <mat-select formControlName="id_departamento" class="select-gris" [disabled]="cargandoMuni"
+          panelClass="select-overlay-gris" required>
+          <mat-option [value]="null" disabled>Seleccione…</mat-option>
+          <mat-option *ngFor="let d of departamentos" [value]="d.id">{{ d.nombre }}</mat-option>
         </mat-select>
+      </mat-form-field>
+
+      <!-- Municipio (depende del departamento) -->
+      <mat-form-field appearance="outline" class="input-glass">
+        <mat-label>Municipio</mat-label>
+        <mat-select formControlName="id_municipio" class="select-gris"
+          [disabled]="!form.get('id_departamento')?.value || cargandoMuni" panelClass="select-overlay-gris" required>
+          <mat-option [value]="null" disabled>Seleccione…</mat-option>
+          <mat-option *ngFor="let m of municipios" [value]="m.id">{{ m.nombre }}</mat-option>
+          <mat-option *ngIf="!municipios?.length" [disabled]="true">Sin datos</mat-option>
+        </mat-select>
+        <mat-hint *ngIf="!form.get('id_departamento')?.value">Seleccione un departamento primero</mat-hint>
       </mat-form-field>
 
       <!-- Acciones -->
       <div class="form-actions col-span-2">
-        <button mat-stroked-button class="glass-btn" type="button" (click)="cancelar()">
+        <button mat-stroked-button class="glass-btn btn-cancelar" type="button" (click)="cancelar()">
           Cancelar
         </button>
         <button mat-raised-button class="glass-btn add-btn" type="submit" [disabled]="form.invalid || cargando">

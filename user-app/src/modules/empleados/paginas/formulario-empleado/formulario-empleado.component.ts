@@ -5,6 +5,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EmpleadosService, EmpleadoCreate, Municipio } from '../../empleados.service';
 
+interface Departamento { id: number; nombre: string; }
+
 @Component({
   selector: 'app-formulario-empleado',
   templateUrl: './formulario-empleado.component.html',
@@ -15,8 +17,12 @@ export class FormEmpleadoComponent implements OnInit {
   titulo = 'Nuevo empleado';
   form!: FormGroup;
 
-  municipios: Municipio[] = [];   // <- usado por el template
-  cargando = false;               // <- usado por el template
+  // Catálogos y estados de carga
+  departamentos: Departamento[] = [];
+  municipios: Municipio[] = [];
+  cargando = false;
+  cargandoMuni = false;
+
   id?: number;
 
   constructor(
@@ -26,6 +32,11 @@ export class FormEmpleadoComponent implements OnInit {
     private api: EmpleadosService,
     private snack: MatSnackBar
   ) {}
+
+  /** Evita usar form?.get('id') en el template (corrige NG8107) */
+  get isEdit(): boolean {
+    return !!this.form?.get('id')?.value;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -42,23 +53,34 @@ export class FormEmpleadoComponent implements OnInit {
       direccion: [''],
       zona: [''],
       colonia: [''],
+      ubicacion: [''],
+
+      // NUEVOS: dependencia Departamento -> Municipio
+      id_departamento: [null, Validators.required],
       id_municipio: [null, Validators.required],
+
       id_estado: ['ACTIVO'] // oculto en el HTML; por defecto ACTIVO
     });
 
-    // Cargar municipios (dinámico)
-    this.api.listarMunicipios().subscribe({
-      next: (list) => this.municipios = list || [],
-      error: () => this.snack.open('No se pudieron cargar los municipios', 'Cerrar', { duration: 3000 })
+    // 1) Cargar Departamentos
+    this.cargarDepartamentos();
+
+    // 2) Cuando cambia Departamento, cargar Municipios
+    this.form.get('id_departamento')?.valueChanges.subscribe((depId: number | null) => {
+      this.form.patchValue({ id_municipio: null }, { emitEvent: false });
+      this.municipios = [];
+      if (depId) this.cargarMunicipios(depId);
     });
 
-    // Si viene id en la ruta => edición
+    // 3) Modo edición (si hay :id en ruta)
     const rawId = this.route.snapshot.paramMap.get('id');
     if (rawId) {
       this.id = +rawId;
       this.titulo = 'Editar empleado';
+
       this.api.obtener(this.id).subscribe((e: any) => {
-        // Normaliza la fecha si no viene en yyyy-MM-dd
+        const depId = e.id_departamento ?? e.departamento?.id ?? null;
+
         this.form.patchValue({
           id: e.id,
           primer_nombre: e.primer_nombre,
@@ -73,11 +95,79 @@ export class FormEmpleadoComponent implements OnInit {
           direccion: e.direccion,
           zona: e.zona,
           colonia: e.colonia,
-          id_municipio: e.id_municipio,
+          ubicacion: e.ubicacion,
+          id_departamento: depId,
+          id_municipio: null,                 // se setea tras cargar lista
           id_estado: e.id_estado ?? 'ACTIVO'
         });
+
+        if (depId) {
+          this.cargarMunicipios(depId, e.id_municipio ?? e.municipio?.id);
+        }
       });
     }
+  }
+
+  /** Carga cat. Departamentos (usa el mismo endpoint que Clientes) */
+  private cargarDepartamentos(): void {
+    const svc: any = this.api as any;
+    if (typeof svc.listarDepartamentos === 'function') {
+      svc.listarDepartamentos().subscribe({
+        next: (rows: any[]) => {
+          this.departamentos = (rows || []).map(r => ({
+            id: r.id ?? r.ID ?? r.id_departamento ?? r.ID_DEPARTAMENTO,
+            nombre: r.nombre ?? r.NOMBRE
+          }));
+        },
+        error: () => this.snack.open('No se pudieron cargar los departamentos', 'Cerrar', { duration: 3000 })
+      });
+    } else {
+      // Fallback: si no tienes listarDepartamentos en el service
+      this.snack.open('Endpoint de departamentos no disponible en EmpleadosService', 'Cerrar', { duration: 3000 });
+    }
+  }
+
+  /** Carga Municipios por Departamento. Si no existe el endpoint filtrado, usa listarMunicipios() y filtra. */
+  private cargarMunicipios(depId: number, preselectId?: number): void {
+    this.cargandoMuni = true;
+    this.form.get('id_municipio')?.disable({ emitEvent: false });
+
+    const svc: any = this.api as any;
+    const obs = (typeof svc.listarMunicipiosPorDepartamento === 'function')
+      ? svc.listarMunicipiosPorDepartamento(depId)
+      : this.api.listarMunicipios();
+
+    obs.subscribe({
+      next: (list: Municipio[] | any[]) => {
+        const data = (list || []) as any[];
+
+        // Si vino la lista general, intentamos filtrar por id_departamento si existe
+        const filtered = (typeof svc.listarMunicipiosPorDepartamento === 'function')
+          ? data
+          : data.filter(r => {
+              const rid = r.id_departamento ?? r.ID_DEPARTAMENTO ?? r.departamento?.id;
+              return Number(rid) === Number(depId);
+            });
+
+        this.municipios = filtered.map(r => ({
+          id: r.id ?? r.ID ?? r.id_municipio ?? r.ID_MUNICIPIO,
+          nombre: r.nombre ?? r.NOMBRE,
+          id_departamento: r.id_departamento ?? r.ID_DEPARTAMENTO ?? depId
+        })) as Municipio[];
+
+        this.form.get('id_municipio')?.enable({ emitEvent: false });
+
+        if (preselectId) {
+          const existe = this.municipios.some(m => Number(m.id) === Number(preselectId));
+          this.form.patchValue({ id_municipio: existe ? preselectId : null }, { emitEvent: false });
+        }
+      },
+      error: () => {
+        this.snack.open('No se pudieron cargar los municipios', 'Cerrar', { duration: 3000 });
+        this.form.get('id_municipio')?.enable({ emitEvent: false });
+      },
+      complete: () => this.cargandoMuni = false
+    });
   }
 
   /** yyyy-MM-dd ajustado por timezone para <input type="date"> */
@@ -102,7 +192,6 @@ export class FormEmpleadoComponent implements OnInit {
     }
 
     const v = this.form.value;
-    // Construcción TIPADA explícita del payload (evita el error TS2352)
     const payload: EmpleadoCreate = {
       id: v.id ?? undefined,
       primer_nombre: v.primer_nombre!,
@@ -117,13 +206,15 @@ export class FormEmpleadoComponent implements OnInit {
       direccion: v.direccion || undefined,
       zona: v.zona || undefined,
       colonia: v.colonia || undefined,
+      ubicacion: v.ubicacion || undefined,
       id_municipio: Number(v.id_municipio),
+      // Envíalo si tu API lo requiere:
+      // id_departamento: Number(v.id_departamento),
       id_estado: v.id_estado || 'ACTIVO'
     };
 
     this.cargando = true;
 
-    // Usa tus métodos existentes (crear/actualizar)
     const req$ = this.id
       ? this.api.actualizar(this.id, payload)
       : this.api.crear(payload);
@@ -141,6 +232,6 @@ export class FormEmpleadoComponent implements OnInit {
   }
 
   cancelar(): void {
-    this.router.navigate(['/empleados']); // volver al listado
+    this.router.navigate(['/empleados']);
   }
 }

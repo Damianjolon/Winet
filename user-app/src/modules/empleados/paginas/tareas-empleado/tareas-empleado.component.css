@@ -1,6 +1,456 @@
-.grid { display:grid; grid-template-columns: 1fr; gap: 16px; }
-.tablero { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.col { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 12px; }
-.pill { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 8px 12px; margin-bottom: 8px; color:#e6e9ee; }
-.pill.hecho { opacity: .7; text-decoration: line-through; }
-@media (max-width: 992px) { .tablero { grid-template-columns: 1fr; } }
+/* ====== LAYOUT GLASS (igual que Asignar-Tarea) ====== */
+.app-superficie{
+  --maxw: 1200px;
+  --azul-marino: #0b2e5b;
+  --azul-marino-rgb: 11,46,91;
+  --azul: #1e88e5;
+
+  display:flex; flex-direction:column; align-items:center;
+  gap:0; padding:28px; min-height:calc(100vh - 64px);
+  background:#ffffff; border-radius:20px; box-sizing:border-box;
+}
+.app-superficie.tareas-contrast{ display:grid; gap:28px; }
+
+/* contenedor 2 columnas responsive */
+.grid{ width:100%; max-width:var(--maxw); display:grid; gap:16px; grid-template-columns:1fr; }
+@media (min-width:980px){ .grid{ grid-template-columns:1fr 1fr; } }
+
+/* Tarjeta glass */
+.tarjeta-glass{ margin:0; }
+.tarjeta-encabezado,.tarjeta-cuerpo{
+  background:rgba(255,255,255,.12); color:#fff;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.30);
+  box-shadow:0 8px 32px rgba(101,99,99,.2);
+}
+.tarjeta-encabezado{
+  display:flex; align-items:center; gap:12px;
+  padding:20px 24px; border-radius:20px 20px 0 0; border-bottom:none;
+}
+.titulo{ margin:0; font-size:1.3rem; font-weight:800; color:var(--azul-marino); }
+.tarjeta-cuerpo{ padding-bottom:16px; }
+
+/* Icono */
+.head-icon{
+  width:44px; height:44px; border-radius:12px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:#0c3c7a; color:#fff; font-size:26px;
+}
+
+/* Fecha en azul marino */
+.fecha-control.mat-mdc-form-field .mdc-floating-label,
+.fecha-control.mat-mdc-form-field .mdc-floating-label--float-above,
+.fecha-control.mat-mdc-form-field.mat-focused .mdc-floating-label{ color:var(--azul-marino) !important; }
+.fecha-control .mat-mdc-form-field-icon-suffix,
+.fecha-control .mat-mdc-form-field-icon-prefix,
+.fecha-control .mat-datepicker-toggle,
+.fecha-control .mat-mdc-form-field-icon-suffix .mat-mdc-icon-button,
+.fecha-control .mat-mdc-form-field-icon-suffix .mat-icon{ color:var(--azul-marino) !important; }
+.fecha-control .mdc-text-field__input{ color:var(--azul-marino) !important; }
+.fecha-control .mdc-text-field__input::placeholder{ color:rgba(11,46,91,.65); }
+
+/* =========================
+   TABLA (Angular Material)
+   ========================= */
+.tabla-tareas,.tabla-oscura{
+  width:100%; border-collapse:collapse; color:#2b2b2b;
+  border-radius:15px; overflow:hidden; background:#fff;
+  box-shadow:0 4px 20px rgba(81,80,80,.12);
+}
+
+/* Encabezado: azul marino claro */
+.tabla-tareas .mat-mdc-header-cell,
+.tabla-oscura .mat-mdc-header-cell{
+  background:#486284 !important; color:#fff !important;
+  font-weight:700; padding:12px 16px; border-bottom:0 !important;
+}
+
+/* Celdas del cuerpo */
+.tabla-tareas .mat-mdc-cell,
+.tabla-oscura .mat-mdc-cell{
+  color:#2b2b2b !important; background:#fff !important;
+  padding:14px 16px; border-bottom:1px solid #e5e7eb !important;
+}
+
+/* Zebra */
+.tabla-tareas .mat-mdc-row:nth-of-type(even) .mat-mdc-cell,
+.tabla-oscura .mat-mdc-row:nth-of-type(even) .mat-mdc-cell{ background:#f7f9fc !important; }
+
+/* Columna de acciones */
+.acciones-cell,
+.tabla-tareas .mat-column-acciones,
+.tabla-oscura .mat-column-acciones{ display:flex; gap:8px; justify-content:flex-start; align-items:center; }
+
+/* ===== MAT-TABLE reset (sin capa oscura NI línea gruesa) ===== */
+/* 0) apaga state-layers por variables */
+.tabla-tareas .mat-mdc-table,
+.tabla-oscura .mat-mdc-table{
+  --mat-table-row-hover-state-layer-color: transparent !important;
+  --mat-table-row-focus-state-layer-color: transparent !important;
+  --mat-table-row-pressed-state-layer-color: transparent !important;
+  --mat-table-row-selected-state-layer-color: transparent !important;
+  --mdc-state-hover-state-layer-opacity: 0 !important;
+  --mdc-state-focus-state-layer-opacity: 0 !important;
+  --mdc-state-pressed-state-layer-opacity: 0 !important;
+}
+
+/* 1) quita overlays de celdas (causan el negro en hover) */
+.tabla-tareas .mdc-data-table__cell::before,
+.tabla-tareas .mat-mdc-cell::before,
+.tabla-tareas .mat-mdc-header-cell::before,
+.tabla-oscura .mdc-data-table__cell::before,
+.tabla-oscura .mat-mdc-cell::before,
+.tabla-oscura .mat-mdc-header-cell::before{ content:none !important; display:none !important; opacity:0 !important; }
+
+/* 2) quita overlays de filas */
+.tabla-tareas .mdc-data-table__row::before,
+.tabla-oscura .mdc-data-table__row::before,
+.tabla-tareas .mat-mdc-row::before,
+.tabla-tareas .mat-mdc-row::after,
+.tabla-oscura .mat-mdc-row::before,
+.tabla-oscura .mat-mdc-row::after{ content:none !important; display:none !important; }
+
+/* 3) header SIN línea gruesa (ni pseudo-línea de MDC) */
+.tabla-tareas .mdc-data-table__header-row,
+.tabla-oscura .mdc-data-table__header-row,
+.tabla-tareas .mat-mdc-header-row,
+.tabla-oscura .mat-mdc-header-row{ box-shadow:none !important; border-bottom:0 !important; }
+.tabla-tareas .mdc-data-table__header-row::after,
+.tabla-oscura .mdc-data-table__header-row::after,
+.tabla-tareas .mat-mdc-header-row::after,
+.tabla-oscura .mat-mdc-header-row::after{ content:none !important; display:none !important; }
+
+/* 4) si hay sticky, quita los bordes/gradientes automáticos */
+.tabla-tareas .mat-mdc-table-sticky,
+.tabla-oscura .mat-mdc-table-sticky{ box-shadow:none !important; background-image:none !important; }
+.tabla-tareas .mat-mdc-table-sticky-border-elem-top,
+.tabla-tareas .mat-mdc-table-sticky-border-elem-bottom,
+.tabla-tareas .mat-mdc-table-sticky-border-elem-left,
+.tabla-tareas .mat-mdc-table-sticky-border-elem-right,
+.tabla-oscura .mat-mdc-table-sticky-border-elem-top,
+.tabla-oscura .mat-mdc-table-sticky-border-elem-bottom,
+.tabla-oscura .mat-mdc-table-sticky-border-elem-left,
+.tabla-oscura .mat-mdc-table-sticky-border-elem-right{ display:none !important; }
+
+/* 5) hover sin oscurecer (mantén color actual de la celda/zebra) */
+.tabla-tareas .mat-mdc-row:hover .mat-mdc-cell,
+.tabla-oscura .mat-mdc-row:hover .mat-mdc-cell{ background:inherit !important; }
+
+/* ====== Botones ====== */
+.btn-fantasma.mat-mdc-stroked-button{
+  background:rgba(255,255,255,.20) !important; border:2px solid rgba(255,255,255,.30) !important;
+  color:#fff !important; border-radius:10px !important; transition:all .3s;
+}
+.btn-fantasma:hover{ background:rgba(255,255,255,.40) !important; color:#2c3e50 !important; }
+.btn-primario{ background:#1a32bc !important; color:#fff !important; border-radius:10px !important; box-shadow:0 8px 20px rgba(0,0,0,.25); }
+
+/* ====== Tablero ====== */
+.tablero{ display:grid; gap:16px; grid-template-columns:1fr; color:#fff; }
+@media (min-width:980px){ .tablero{ grid-template-columns:repeat(3,1fr); } }
+.tablero .col{ background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.25); border-radius:14px; padding:14px; }
+.tablero h4{ color:var(--azul-marino); }
+.pill{ background:rgba(255,255,255,.20); border:1px solid rgba(255,255,255,.35); color:#fff; padding:10px 12px; border-radius:10px; margin-bottom:8px; }
+.pill.hecho{ background:#def7ec; color:#065f46; border-color:#c6f1e5; }
+.pill-title{ font-weight:600; }
+.pill-sub{ font-size:12px; opacity:.8; }
+
+/* Responsive */
+@media (max-width:900px){ .tarjeta-encabezado,.tarjeta-cuerpo{ padding:16px; } }
+
+/* Alerta inactivo */
+.alerta-inactivo{
+  width:100%; max-width:var(--maxw);
+  margin:10px 0 0; padding:12px 16px; border-radius:12px;
+  display:flex; align-items:center; gap:8px;
+  color:#7f1d1d; background:#fee2e2; border:1px solid #fecaca;
+}
+.alerta-inactivo .mat-icon{ color:#b91c1c; }
+
+/* SnackBar de error */
+.snack-error{ --mdc-snackbar-container-color:#b91c1c; --mdc-snackbar-supporting-text-color:#fff; }
+
+/* utilidades */
+.full-width{ width:100%; }
+.texto-muted{ color:#64748b !important; }
+
+/* ============================
+   CARDS EN GRIS (tablero/listado)
+   ============================ */
+.app-superficie.tareas-contrast .tarjeta-glass .tarjeta-encabezado,
+.app-superficie.tareas-contrast .tarjeta-glass .tarjeta-cuerpo{
+  background:#f5f7fa !important;             /* gris claro */
+  color:#0f172a !important;
+  border:1px solid #e5e7eb !important;        /* borde sutil */
+  box-shadow:0 6px 16px rgba(17,24,39,.08) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+.app-superficie.tareas-contrast .tarjeta-glass .tarjeta-encabezado{
+  border-radius:16px 16px 0 0 !important;
+}
+.app-superficie.tareas-contrast .tarjeta-glass .tarjeta-cuerpo{
+  border-radius:0 0 16px 16px !important;
+}
+
+/* Columnas del tablero también con card gris */
+.tablero .col{
+  background:#eef2f7 !important;             /* un poco más oscuro para separar */
+  border:1px solid #e2e8f0 !important;
+  border-radius:12px !important;
+  padding:14px !important;
+}
+
+/* Títulos en azul marino */
+.tablero h4,
+.titulo{ color:#0b2e5b !important; }
+
+/* ============================
+   PILLS / ACTIVIDADES CON COLOR
+   ============================ */
+.pill{
+  display:block;
+  margin-bottom:8px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid transparent;
+  font-weight:600;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+
+/* 1) Tarea por Realizar (1ª columna) – gris azulado */
+.tablero .col:nth-child(1) .pill{
+  background:#f1f5f9;             /* gris frío */
+  color:#0f172a;
+  border-color:#dbe3ea;
+}
+
+/* 2) Pendiente (2ª columna) – ámbar */
+.tablero .col:nth-child(2) .pill{
+  background:#fff4d6;
+  color:#7a5200;
+  border-color:#fde68a;
+}
+
+/* 3) En proceso (3ª columna) – azul */
+.tablero .col:nth-child(3) .pill{
+  background:#e6f0ff;
+  color:#0b2e5b;
+  border-color:#bfdbfe;
+}
+
+/* 4) Completadas (4ª columna) – verde (ya lo usas como .hecho) */
+.pill.hecho{
+  background:#def7ec !important;
+  color:#065f46 !important;
+  border-color:#c6f1e5 !important;
+}
+
+/* Hover consistente en todas */
+.pill:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 14px rgba(0,0,0,.10);
+}
+
+/* Texto secundario dentro de la pill (empleado) */
+.pill-sub{ opacity:.75; }
+
+/* Texto desactivado cuando no hay items */
+.texto-muted{ color:#64748b !important; }
+
+
+/* styles.scss — GLOBAL overrides para tablas Angular Material */
+:root { --header-azul: #486284; }
+
+/* 1) Línea gruesa bajo el header (sticky border element) */
+.mat-mdc-table-sticky-border-elem-bottom {
+  /* opción A: disimularla pintándola igual que el encabezado */
+  background: var(--header-azul) !important;
+  /* y hacerla imperceptible */
+  height: 0 !important;
+  opacity: 0 !important;
+  /* opción B: si quieres quitarla totalmente, descomenta: */
+  /* display: none !important; */
+}
+
+/* Por si hay otras variantes de sticky */
+.mat-mdc-table-sticky-border-elem-top,
+.mat-mdc-table-sticky-border-elem-left,
+.mat-mdc-table-sticky-border-elem-right {
+  display: none !important;
+}
+
+/* 2) Pseudo-borde extra del header (algunos temas lo usan) */
+.mdc-data-table__header-row::after,
+.mat-mdc-header-row::after {
+  background: var(--header-azul) !important;  /* lo camufla */
+  height: 0 !important;
+  opacity: 0 !important;
+  content: none !important;
+  display: none !important;
+}
+
+/* 3) Quitar capa oscura en hover (state-layer de celdas) */
+.mdc-data-table__cell::before,
+.mat-mdc-cell::before,
+.mat-mdc-header-cell::before {
+  content: none !important;
+  display: none !important;
+  opacity: 0 !important;
+}
+
+
+:host ::ng-deep .mat-mdc-table-sticky-border-elem-bottom{
+  background: #486284 !important;
+  height: 1px !important;
+  box-shadow: none !important;
+}
+:host ::ng-deep .mdc-data-table__header-row::after,
+:host ::ng-deep .mat-mdc-header-row::after{
+  background: #486284 !important;
+  height: 1px !important;
+}
+:host ::ng-deep .mat-mdc-table-sticky-border-elem-right{
+  background: #486284 !important;
+  width: 1px !important;
+}
+
+/* ===== TABLA LIMPIA (sin Angular Material overlays) ===== */
+.tabla-wrap{
+  border-radius: 15px;
+  overflow: hidden;                /* redondeado real */
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(81,80,80,.12);
+}
+
+.tabla-limpia{
+  width: 100%;
+  border-collapse: collapse;       /* sin dobles bordes */
+  table-layout: fixed;             /* columnas estables */
+  color: #2b2b2b;
+}
+
+/* Encabezado: azul marino claro */
+.tabla-limpia thead th{
+  background: #486284;             /* mismo azul del header anterior */
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+  padding: 12px 16px;
+  border: 0;                       /* sin línea inferior */
+}
+
+/* Celdas cuerpo */
+.tabla-limpia tbody td{
+  padding: 14px 16px;
+  background: #fff;
+}
+
+/* Separador entre filas (uno solo, fino y uniforme) */
+.tabla-limpia tbody tr{
+  border-bottom: 1px solid #e5e7eb;
+}
+.tabla-limpia tbody tr:last-child{
+  border-bottom: 0;
+}
+
+/* Zebra */
+.tabla-limpia tbody tr:nth-child(even) td{
+  background: #f7f9fc;
+}
+
+/* Hover claro (sin oscurecer en exceso) */
+.tabla-limpia tbody tr:hover td{
+  background: rgba(11,46,91,.04);
+}
+
+/* Columna de acciones alineada */
+.tabla-limpia .acciones-cell{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* (opcional) evita que botones salten de línea en acciones */
+.tabla-limpia .col-acciones{ width: 320px; } /* ajusta a tu gusto */
+
+/* Botón "Finalizada" — mismo estilo stroked, color diferenciado (verde) */
+.btn-finalizada.mat-mdc-outlined-button{
+  /* Variables MDC (si tu tema las soporta) */
+  --mdc-outlined-button-label-text-color: #2e7d32;
+  --mdc-outlined-button-outline-color: #2e7d32;
+  /* Fallbacks por si las variables no aplican */
+  color: #2e7d32 !important;
+  border-color: #2e7d32 !important;
+}
+
+/* Hover/focus suaves y consistentes */
+.btn-finalizada.mat-mdc-outlined-button:hover{
+  background: rgba(46,125,50,.06);
+}
+.btn-finalizada.mat-mdc-outlined-button:focus-visible{
+  outline: 2px solid rgba(46,125,50,.4);
+  outline-offset: 2px;
+}
+
+:host ::ng-deep .fecha-control .mdc-notched-outline__leading,
+:host ::ng-deep .fecha-control .mdc-notched-outline__notch,
+:host ::ng-deep .fecha-control .mdc-notched-outline__trailing{
+  border-color: rgba(11,46,91,.55) !important;
+}
+:host ::ng-deep .fecha-control:hover .mdc-notched-outline__leading,
+:host ::ng-deep .fecha-control:hover .mdc-notched-outline__notch,
+:host ::ng-deep .fecha-control:hover .mdc-notched-outline__trailing{
+  border-color: rgba(11,46,91,.75) !important;
+}
+:host ::ng-deep .fecha-control.mat-focused .mdc-notched-outline__leading,
+:host ::ng-deep .fecha-control.mat-focused .mdc-notched-outline__notch,
+:host ::ng-deep .fecha-control.mat-focused .mdc-notched-outline__trailing{
+  border-color: #0b2e5b !important;
+}
+
+:host ::ng-deep .fecha-control .mdc-floating-label,
+:host ::ng-deep .fecha-control .mdc-floating-label--float-above{
+  color: #0b2e5b !important;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .fecha-control .mdc-text-field__input{
+  color: #0b2e5b !important;
+  caret-color: #0b2e5b !important;
+}
+:host ::ng-deep .fecha-control .mdc-text-field__input::placeholder{
+  color: rgba(11,46,91,.60) !important;
+}
+:host ::ng-deep .fecha-control .mat-mdc-form-field-icon-suffix,
+:host ::ng-deep .fecha-control .mat-mdc-form-field-icon-prefix,
+:host ::ng-deep .fecha-control .mat-datepicker-toggle,
+:host ::ng-deep .fecha-control .mat-mdc-icon-button,
+:host ::ng-deep .fecha-control .mat-datepicker-toggle-default-icon{
+  color: #0b2e5b !important;
+  fill: #0b2e5b !important;
+}
+
+:host ::ng-deep .mat-datepicker-content .mat-calendar-previous-button,
+:host ::ng-deep .mat-datepicker-content .mat-calendar-next-button,
+:host ::ng-deep .mat-datepicker-content .mat-calendar-period-button{
+  color: #0b2e5b !important;
+}
+:host ::ng-deep .mat-datepicker-content .mat-calendar-previous-button,
+:host ::ng-deep .mat-datepicker-content .mat-calendar-next-button,
+:host ::ng-deep .mat-datepicker-content .mat-calendar-period-button{
+  color: #0b2e5b !important;
+  --mat-mdc-button-persistent-ripple-color: rgba(11,46,91,.25);
+  --mat-mdc-button-ripple-color: rgba(11,46,91,.25);
+}
+:host ::ng-deep .mat-datepicker-content .mat-calendar-previous-button:hover,
+:host ::ng-deep .mat-datepicker-content .mat-calendar-next-button:hover,
+:host ::ng-deep .mat-datepicker-content .mat-calendar-period-button:hover{
+  background: rgba(11,46,91,.08) !important;
+}
+
+/* Fallback pre-MDC */
+:host ::ng-deep .mat-calendar-controls .mat-calendar-previous-button,
+:host ::ng-deep .mat-calendar-controls .mat-calendar-next-button,
+:host ::ng-deep .mat-calendar-controls .mat-calendar-period-button{
+  color: #0b2e5b !important;
+}

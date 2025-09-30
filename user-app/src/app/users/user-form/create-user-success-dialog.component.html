@@ -1,0 +1,22 @@
+<div class="dialog-wrap">
+  <mat-icon class="ok-icon" aria-hidden="true">check_circle</mat-icon>
+  <h2 class="title">¡Usuario creado con éxito!</h2>
+
+  <div class="details">
+    <div class="line">
+      <mat-icon class="line-icon person" aria-hidden="true">person</mat-icon>
+      <span class="value">{{ data.nombre || 'Sin nombre' }}</span>
+    </div>
+
+    <div class="line">
+      <mat-icon class="line-icon module" aria-hidden="true">extension</mat-icon>
+      <span class="value">
+        Módulos: {{ (data.modulos.length ? data.modulos.join(', ') : 'Ninguno') }}
+      </span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="close()">Aceptar</button>
+  </div>
+</div>
