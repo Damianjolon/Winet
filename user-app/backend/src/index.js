@@ -32,6 +32,14 @@ app.use('/api/departamentos', require('../modules/departamentos/departamentos.ro
 app.use('/api/municipios',    require('../modules/municipios/municipios.routes'));
 
 
+// const recibosRoutes = require('./modules/recibos/recibos.routes');
+// const serviciosRoutes = require('./modules/servicios/servicios.routes');
+// const productosRoutes = require('./modules/productos/productos.routes');
+
+// app.use('/api/recibos', recibosRoutes);
+// app.use('/api/servicios', serviciosRoutes);
+// app.use('/api/productos', productosRoutes);
+
 // Health
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
