@@ -58,44 +58,99 @@
 // }
 
 
-
-//TODO Este es de la PC Personal
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { Observable, throwError } from 'rxjs';
-import { environment } from '../environments/environment';
-
-interface LoginResponse {
-  ok: boolean;
-  message?: string;
-  error?: string;
-  user?: { id: number; usuario: string; rol?: any; id_rol?: any };
-  token?: string;
-}
+import { map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`;
-  private loggedIn = false;
+  private base = '/auth'; // ajusta si usas proxy o env
 
   constructor(private http: HttpClient) {}
 
-  login(usuario: string, password: string): Observable<boolean> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { usuario, password })
-      .pipe(
-        map(resp => {
-          if (resp && resp.ok) {
-            this.loggedIn = true; // sin token por ahora
-            return true;
-          }
-          // Si el backend respondiera 200 con ok:false, opcionalmente:
-          throw new Error(resp?.error || 'Credenciales inválidas');
-        })
-      );
+  login(usuario: string, password: string, remember = false): Observable<boolean> {
+    return this.http.post<any>(`${this.base}/login`, { usuario, password, remember }).pipe(
+      tap(resp => {
+        if (resp?.ok && resp.token) {
+          localStorage.setItem('token', resp.token);
+          localStorage.setItem('user', JSON.stringify(resp.user));
+          localStorage.setItem('isLoggedIn', 'true');
+        }
+      }),
+      map(resp => !!resp?.ok)
+    );
   }
 
-  logout() { this.loggedIn = false; }
-  isAuthenticated(): boolean { return this.loggedIn; }
+  me() {
+    return this.http.get<any>(`${this.base}/me`);
+  }
+
+  logout() {
+    const hasToken = !!localStorage.getItem('token');
+    if (!hasToken) {
+      this.clearLocal();
+      return of(true);
+    }
+    return this.http.post<any>(`${this.base}/logout`, {}).pipe(
+      tap(() => this.clearLocal())
+    );
+  }
+
+  forgotPassword(usuarioOrEmail: string) {
+    return this.http.post<any>(`${this.base}/forgot-password`, { usuarioOrEmail });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post<any>(`${this.base}/reset-password`, { token, newPassword });
+  }
+
+  private clearLocal() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('isLoggedIn');
+  }
 }
+
+
+
+//TODO Este es de la PC Personal
+// import { Injectable } from '@angular/core';
+// import { HttpClient } from '@angular/common/http';
+// import { map } from 'rxjs/operators';
+// import { Observable, throwError } from 'rxjs';
+// import { environment } from '../environments/environment';
+
+// interface LoginResponse {
+//   ok: boolean;
+//   message?: string;
+//   error?: string;
+//   user?: { id: number; usuario: string; rol?: any; id_rol?: any };
+//   token?: string;
+// }
+
+// @Injectable({ providedIn: 'root' })
+// export class AuthService {
+//   private apiUrl = `${environment.apiUrl}/auth`;
+//   private loggedIn = false;
+
+//   constructor(private http: HttpClient) {}
+
+//   login(usuario: string, password: string): Observable<boolean> {
+//     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { usuario, password })
+//       .pipe(
+//         map(resp => {
+//           if (resp && resp.ok) {
+//             this.loggedIn = true; // sin token por ahora
+//             return true;
+//           }
+//           // Si el backend respondiera 200 con ok:false, opcionalmente:
+//           throw new Error(resp?.error || 'Credenciales inválidas');
+//         })
+//       );
+//   }
+
+//   logout() { this.loggedIn = false; }
+//   isAuthenticated(): boolean { return this.loggedIn; }
+// }
 
