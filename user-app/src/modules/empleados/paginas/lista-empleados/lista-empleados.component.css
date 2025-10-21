@@ -1,76 +1,480 @@
-/* =========================================================
-   TOKENS / PALETA
-   ========================================================= */
+/* ======= LAYOUT GENERAL (gradiente + card glass) ======= */
+/* ===== Paleta ===== */
 :root{
-  --azul-marino: #0b2f5e;
-  --azul-marino-soft: rgba(11,47,94,.12);
+  --azul-marino: #0b2f5e;                 /* navy */
+  --azul-marino-soft: rgba(11,47,94,.12); /* fondo suave opcional */
   --azul-marino-borde: rgba(11,47,94,.18);
-
-  --teal: #1abc9c;
-  --glass-bg: rgba(255,255,255,0.12);
-  --glass-border: rgba(255,255,255,0.30);
-  --texto-oscuro: #111827;
-  --texto-claro: #eef2f6;
-  --gris-borde: #3e3e3e;
+}
+/* Botón "Tableros" en azul marino */
+.btn-fantasma.mat-mdc-stroked-button{
+  color:#0b2f5e !important;            /* texto e icono (heredan) */
+  background:#ffffff !important;
+  border:1px solid #e5e7eb !important;
+  border-radius:10px !important;
 }
 
-/* =========================================================
-   LAYOUT / CARD (una sola tarjeta glass)
-   ========================================================= */
+/* Asegurar color/tamaño del <mat-icon> */
+.btn-fantasma.mat-mdc-stroked-button mat-icon{
+  color:inherit !important;            /* usa el azul del botón */
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:20px; width:20px; height:20px;
+  margin-right:6px;
+  opacity:1 !important;
+}
+
+/* Por si el header forzaba blanco */
+.tarjeta-encabezado{ color:#111827 !important; }
+
+/* Ícono principal del encabezado (👥 groups) en azul marino */
+.tarjeta-encabezado > mat-icon{
+  color: var(--azul-marino) !important;
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* Ícono de "Tableros" (dentro del botón fantasma) en azul marino */
+.tarjeta-encabezado .btn-fantasma mat-icon{
+  color: var(--azul-marino) !important;
+  opacity: .95;
+}
+
+/* Mantener el ícono de "Nuevo" blanco para contraste en el botón */
+.tarjeta-encabezado .btn-primario mat-icon{
+  color: #19023e !important;
+}
+
+/* —— OPCIONAL: estilo “chip” para íconos (si quieres realzar el ícono de la izquierda) —— */
+/* (Si decides usarlo, solo agrega la clase .icon-chip-marino al <mat-icon>) */
+.icon-chip-marino{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 999px;
+  background: var(--azul-marino-soft);
+  color: var(--azul-marino) !important;
+  border: 1px solid var(--azul-marino-borde);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+}
+.icon-chip-marino:hover{
+  background: rgba(11,47,94,.18);
+}
+
+/* Fondo gradiente y centrado del contenido */
 .app-superficie{
   --maxw: 1200px;
-  display:flex; flex-direction:column; align-items:center; gap:0;
-  padding:28px; min-height:calc(100vh - 64px);
-  background:#ffffff; border-radius:20px; box-sizing:border-box;
+  display:flex;
+  justify-content:center;
+  padding:20px;
+  background: #ffffff;
+  border-radius:20px;
+  min-height: calc(100vh - 64px);
+  box-sizing: border-box;
 }
 
+/* Cabezal y cuerpo se comportan como una misma “card” */
 .tarjeta-encabezado,
 .tarjeta-cuerpo{
-  width:100%; max-width:var(--maxw);
-  background:var(--glass-bg);
+  width:100%;
+  max-width: var(--maxw);
+  background: rgba(255, 255, 255, 0.12);
   color:#fff;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border:1px solid var(--glass-border);
-  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.30);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
 
+/* Bordes redondeados superior/inferior para que parezca una sola tarjeta */
 .tarjeta-encabezado{
-  border-radius:20px 20px 0 0;
-  padding:24px 30px; margin:0; border-bottom:none;
-  display:flex; align-items:center; gap:12px;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 30px;
 }
 .tarjeta-cuerpo{
-  border-radius:0 0 20px 20px;
-  padding:24px 30px; margin:0; border-top:none;
+  border-radius: 0 0 20px 20px;
+  padding: 24px 30px;
+  border-top: none; /* une visualmente con el encabezado */
 }
 
-.tarjeta-encabezado{ color: var(--texto-oscuro) !important; }
-.tarjeta-encabezado h2{ font-size:1.8rem; font-weight:800; color:#0c0c0c; }
+/* Títulos y subtítulo (igual que clientes) */
+.tarjeta-encabezado h2{ font-size: 1.8rem; font-weight: 700; color:#0c0c0c; }
 .texto-muted{ color: rgba(255,255,255,0.9); }
 
-/* Ícono principal del encabezado */
-.tarjeta-encabezado > mat-icon{
-  color: var(--azul-marino) !important;
-  font-size:28px; line-height:1;
+/* ======= TOOLBAR / FILTROS ======= */
+
+.filtros{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom: 18px;
 }
 
-/* =========================================================
-   FILTROS / CAMPOS
-   ========================================================= */
+/* Campo de búsqueda y select con efecto glass */
+.input-oscuro .mat-mdc-text-field-wrapper,
+.input-oscuro .mat-mdc-form-field-flex{
+  background: rgba(255,255,255,0.20) !important;
+  border-radius: 12px !important;
+  padding: 0 10px !important;
+  color:#fff !important;
+}
+.input-oscuro .mdc-text-field__input,
+.input-oscuro .mat-mdc-select-value-text,
+.input-oscuro .mat-mdc-floating-label{ color:#fff !important; }
+.input-oscuro input::placeholder{ color: rgba(255,255,255,0.7) !important; }
+.input-oscuro .mat-icon{ color:#13055c !important; }
+
+/* Botón “Nuevo” en teal */
+.btn-primario{
+  background:#1abc9c !important;
+  color:#fff !important;
+  border-radius:10px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+/* ======= TABLA estilo “clientes” ======= */
+
+.tabla-oscura{
+  width:100%;
+  border-radius: 15px;
+  overflow: hidden;                   /* para que el radio no se “escape” */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  background: rgba(255, 255, 255, 0.15);
+  border-collapse: separate;          /* evita interferencia con box-shadow */
+}
+
+/* Cabecera teal */
+.tabla-oscura thead th{
+  background: rgba(26,188,156,0.90);
+  color:#fff;
+  font-weight: 700;
+  padding: 12px;
+  text-align: left;
+  border-bottom: none;
+}
+
+/* Celdas oscuras con texto blanco */
+.tabla-oscura tbody td{
+  background: #2f3336;
+  color:#eef2f6;
+  padding: 14px 16px;
+  border-bottom: none;
+}
+
+/* Línea uniforme por fila (sin cortes por celda) */
+.tabla-oscura tbody tr{
+  box-shadow: inset 0 -1px rgba(255,255,255,0.15);
+}
+.tabla-oscura thead tr{
+  box-shadow: inset 0 -1px rgba(255,255,255,0.18);
+}
+
+/* Hover de fila */
+.tabla-oscura tbody tr:hover{
+  background: rgba(255,255,255,0.08);
+  transition: background-color .2s ease;
+}
+
+
+
+/* Acciones tipo glass */
+.btn-fantasma.mat-mdc-stroked-button{
+  background: rgba(255,255,255,0.20) !important;
+  border: 2px solid rgba(255,255,255,0.30) !important;
+  color:#11016d !important;
+  border-radius:10px !important;
+  transition: all .3s ease;
+}
+.btn-fantasma.mat-mdc-stroked-button:hover{
+  background: rgba(255,255,255,0.40) !important;
+  color:#2c3e50 !important;
+}
+
+/* Badges de estado (tonos suaves) */
+.etiqueta{ padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+.etiqueta.exito{ background:#def7ec; color:#065f46; }
+.etiqueta.peligro{ background:#ffe4e6; color:#9f1239; }
+
+/* ======= RESPONSIVE ======= */
+@media (max-width: 900px){
+  .tarjeta-encabezado, .tarjeta-cuerpo{ padding: 16px; }
+  .filtros{ flex-direction: column; }
+}
+
+/* ====== Forzar una sola columna, full width ====== */
+.app-superficie{
+  /* layout de página */
+  display: flex;
+  flex-direction: column;     /* apilar encabezado + cuerpo */
+  align-items: center;        /* centrar el “card” */
+  gap: 0;                     /* sin separación entre header y body */
+  padding: 28px;
+  min-height: calc(100vh - 64px);
+  background: #ffffff;
+  border-radius: 20px;
+  box-sizing: border-box;
+}
+
+/* Unificar visualmente como una sola tarjeta glass */
+/* .tarjeta-encabezado,
+.tarjeta-cuerpo{
+  width: 100%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.12);
+  color:#fff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.30);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+} */
+
+/* Bordes para que parezcan UNA tarjeta */
+/* .tarjeta-encabezado{
+  border-radius: 20px 20px 0 0;
+  padding: 24px 30px;
+  margin: 0;
+  border-bottom: none;
+}
+.tarjeta-cuerpo{
+  border-radius: 0 0 20px 20px;
+  padding: 24px 30px;
+  margin: 0;
+  border-top: none;
+} */
+
+/* Tipos y botón (mismo look de Clientes) */
+.tarjeta-encabezado h2{ font-size: 1.8rem; font-weight: 800; color:#0f0f0f; }
+.texto-muted{ color: rgba(255,255,255,0.9); }
+.btn-primario{
+  background:#1abc9c !important; color:#fff !important;
+  border-radius:10px !important; box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+/* ====== Toolbar / filtros ====== */
 .filtros{
-  display:grid; grid-template-columns:1fr 220px;
-  gap:12px; margin-bottom:18px; width:100%;
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 12px;
+  margin-bottom: 18px;
+  width: 100%;
 }
 .filtros .mat-mdc-form-field,
-.filtros .mat-mdc-text-field-wrapper{ width:100%; }
+.filtros .mat-mdc-text-field-wrapper{ width: 100%; }
 
 .input-oscuro .mat-mdc-text-field-wrapper,
 .input-oscuro .mat-mdc-form-field-flex{
-  background: rgba(162, 162, 162, 0.2) !important;
-  border-radius:12px !important;
-  padding:0 10px !important;
-  color:#1a1a1a !important;
+  background: rgba(255,255,255,0.20) !important;
+  border-radius: 12px !important;
+  padding: 0 10px !important;
+  color:#fff !important;
+}
+.input-oscuro .mdc-text-field__input,
+.input-oscuro .mat-mdc-select-value-text,
+.input-oscuro .mat-mdc-floating-label{ color:#fff !important; }
+.input-oscuro input::placeholder{ color: rgba(255,255,255,0.7) !important; }
+
+
+@media (max-width: 900px){
+  .tarjeta-encabezado, .tarjeta-cuerpo{ padding: 16px; }
+  .filtros{ grid-template-columns: 1fr; }
+}
+
+/* === CONTENEDOR === */
+.tabla-container {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* === ENCABEZADO === */
+.tabla-empleados th {
+  background: rgba(26, 188, 156, 0.9);
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+}
+
+/* === CELDAS === */
+.tabla-empleados td {
+  color: #fff;
+  font-weight: 500;
+  padding: 10px;
+}
+
+/* ===== LÍNEAS UNIFORMES ===== */
+.tabla-empleados th,
+.tabla-empleados td {
+  border-bottom: none; /* elimina líneas grises por celda */
+}
+
+.tabla-empleados .mat-mdc-row {
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.15); /* línea uniforme */
+}
+
+.tabla-empleados .mat-mdc-header-row {
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.18); /* línea debajo del header */
+}
+
+/* Hover fila */
+.tabla-empleados tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s ease;
+}
+
+/* Base tabla */
+.tabla-empleados .mat-mdc-table,
+.tabla-empleados table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+}
+
+/* Altura filas */
+.tabla-empleados .mat-mdc-row,
+.tabla-empleados .mat-mdc-header-row {
+  height: 64px;
+}
+
+/* Evitar recortes */
+.tabla-empleados .mat-mdc-cell,
+.tabla-empleados .mat-mdc-header-cell {
+  overflow: visible;
+}
+
+/* === Columna Avatar (si aplica) === */
+.tabla-empleados .mat-column-avatar {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+  padding: 0 8px 0 16px;
+}
+
+.avatar-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-icon, .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: block;
+}
+
+.avatar-icon {
+  font-size: 40px;
+  line-height: 40px;
+  color: #110243;
+}
+
+/* === Columna Acciones === */
+.tabla-empleados .mat-column-acciones {
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  padding: 0 16px;
+}
+
+.acciones-cell {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .tabla-empleados .mat-column-avatar { width: 56px; min-width: 56px; max-width: 56px; }
+  .avatar-icon, .avatar { width: 32px; height: 32px; }
+  .tabla-empleados .mat-column-acciones { width: 80px; min-width: 80px; max-width: 80px; }
+  .tabla-empleados .mat-mdc-row, .tabla-empleados .mat-mdc-header-row { height: 56px; }
+}
+
+/* Acciones tipo glass */
+.btn-fantasma.mat-mdc-stroked-button{
+  background: rgba(255,255,255,0.20) !important;
+  border: 2px solid rgba(255,255,255,0.30) !important;
+  color:#2c3e50 !important; border-radius:10px !important; transition: all .3s;
+}
+.btn-fantasma.mat-mdc-stroked-button:hover{
+  background: rgba(255,255,255,0.40) !important; color:#2c3e50 !important;
+}
+
+/* Badges estado */
+.etiqueta{ padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+.etiqueta.exito{ background:#def7ec; color:#065f46; }
+.etiqueta.peligro{ background:#ffe4e6; color:#9f1239; }
+
+/* ======= LAYOUT: una sola tarjeta, full width ======= */
+.app-superficie{
+  --maxw: 1200px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 28px;
+  min-height: calc(100vh - 64px);
+  background: #ffffff;
+  border-radius: 20px;
+  box-sizing: border-box;
+}
+
+/* Tarjeta glass unificada */
+.tarjeta-encabezado,
+.tarjeta-cuerpo{
+  width:100%;
+  max-width: var(--maxw);
+  background: rgba(255, 255, 255, 0.12);
+  color:#fff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.30);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.tarjeta-encabezado{
+  border-radius: 20px 20px 0 0;
+  padding: 24px 30px;
+  margin: 0;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tarjeta-cuerpo{
+  border-radius: 0 0 20px 20px;
+  padding: 24px 30px;
+  margin: 0;
+  border-top: none;
+}
+.tarjeta-encabezado h2{ font-size: 1.8rem; font-weight: 800; color:#0c0c0c; }
+.texto-muted{ color: rgba(255,255,255,0.9); }
+
+/* Botón “Nuevo” bien separado y con look teal */
+.btn-primario{
+  margin-left: 12px;
+  background:#1abc9c !important;
+  color:#fff !important;
+  border-radius:10px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+/* ======= FILTROS (buscador + estado) ======= */
+.filtros{
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 12px;
+  margin-bottom: 18px;
+  width: 100%;
+}
+.filtros .mat-mdc-form-field,
+.filtros .mat-mdc-text-field-wrapper{ width: 100%; }
+
+.input-oscuro .mat-mdc-text-field-wrapper,
+.input-oscuro .mat-mdc-form-field-flex{
+  background: rgba(255,255,255,0.20) !important;
+  border-radius: 12px !important;
+  padding: 0 10px !important;
+  color:#fff !important;
 }
 .input-oscuro .mdc-text-field__input,
 .input-oscuro .mat-mdc-select-value-text,
@@ -78,316 +482,150 @@
 .input-oscuro input::placeholder{ color: rgba(255,255,255,0.7) !important; }
 
 @media (max-width: 900px){
-  .tarjeta-encabezado, .tarjeta-cuerpo{ padding:16px; }
-  .filtros{ grid-template-columns:1fr; }
+  .tarjeta-encabezado, .tarjeta-cuerpo{ padding: 16px; }
+  .filtros{ grid-template-columns: 1fr; }
 }
 
-/* =========================================================
-   BOTONES
-   ========================================================= */
-/* Primario teal */
-.btn-primario{
-  background:var(--teal) !important;
-  color:#fff !important;
-  border-radius:10px !important;
-  box-shadow:0 4px 12px rgba(0,0,0,.2);
-  margin-left:12px;
-}
-/* Mantén el icono de “Nuevo” blanco */
-.tarjeta-encabezado .btn-primario mat-icon{ color:#ffffff !important; }
-
-/* Fantasma (base) */
-.btn-fantasma.mat-mdc-stroked-button{
-  background: rgba(255,255,255,0.20) !important;
-  border: 2px solid rgba(255,255,255,0.30) !important;
-  color:#2c3e50 !important;
-  border-radius:10px !important;
-  transition: all .3s ease;
-}
-.btn-fantasma.mat-mdc-stroked-button:hover{
-  background: rgba(255,255,255,0.40) !important;
-}
-
-/* Variante del botón fantasma dentro del encabezado (fondo blanco, azul marino) */
-.tarjeta-encabezado .btn-fantasma.mat-mdc-stroked-button,
-.tarjeta-encabezado .btn-fantasma.mat-mdc-outlined-button{
-  background:#ffffff !important;
-  border:1px solid var(--gris-borde) !important;
-  color:var(--azul-marino) !important;
-  border-radius:10px !important;
-
-  /* Tokens MDC para asegurar color del label/borde */
-  --mdc-outlined-button-label-text-color: var(--azul-marino);
-  --mdc-outlined-button-outline-color: var(--gris-borde);
-}
-
-/* Icono dentro del botón fantasma */
-.btn-fantasma.mat-mdc-stroked-button mat-icon,
-.btn-fantasma .mat-icon{
-  color:inherit !important;
-  display:inline-flex !important;
-  align-items:center; justify-content:center;
-  font-size:20px !important; width:20px; height:20px;
-  margin-right:6px; opacity:1 !important;
-}
-
-/* Chip opcional para iconos grandes */
-.icon-chip-marino{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:36px; height:36px; border-radius:999px;
-  background: var(--azul-marino-soft);
-  color: var(--azul-marino) !important;
-  border:1px solid var(--azul-marino-borde);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
-}
-.icon-chip-marino:hover{ background: rgba(11,47,94,.18); }
-
-/* Botones de acción (íconos a la derecha de cada fila) */
-.btn-accion{ color:#b0b0b0 !important; transition: color .2s ease-in-out; }
-.btn-accion:hover{ color:#ffffff !important; }
-.icon-muted{ opacity:.4; }
-
-/* =========================================================
-   TABLA (UNIFICADA) — sin líneas/inset
-   ========================================================= */
-/* Alias: usa el mismo estilo tanto si tu HTML tiene .tabla-oscura como .tabla-empleados */
-.tabla-oscura,
-.tabla-empleados{
+/* ======= TABLA SIN LÍNEAS VISIBLES =======
+   (cabecera teal, filas oscuras; sin bordes, sin “inset lines”) */
+.tabla-oscura{
   width:100%;
-  border-collapse: collapse;
-  border:none;
-  border-radius:15px;
-  overflow:hidden;
+  border-collapse: collapse;          /* sin huecos */
+  border: none;                       /* sin borde de tabla */
+  border-radius: 15px;
+  overflow: hidden;                   /* respeta el radio */
   background: rgba(255, 255, 255, 0.15);
-  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
-/* Encabezado */
-.tabla-oscura thead th,
-.tabla-empleados thead th{
-  background: #486284; /* o usa var(--teal) si prefieres */
+/* Cabecera */
+.tabla-oscura thead th{
+  background: rgba(26,188,156,0.90);
   color:#fff;
-  font-weight:700;
-  padding:12px;
-  text-align:left;
-  border:none;            /* sin líneas por celda */
+  font-weight: 700;
+  padding: 12px;
+  text-align: left;
+  border: none;                       /* NO líneas */
 }
-.tabla-oscura thead tr,
-.tabla-empleados thead tr{
-  box-shadow:none !important; /* sin línea bajo header */
+.tabla-oscura thead tr{ box-shadow: none !important; } /* sin línea bajo header */
+
+/* Celdas cuerpo */
+.tabla-oscura tbody td{
+  background: #2f3336;
+  color:#eef2f6;
+  padding: 14px 16px;
+  border: none;                       /* NO líneas */
 }
 
-/* Cuerpo */
-.tabla-oscura tbody td,
-.tabla-empleados tbody td{
-  background:#ffffff;
-  color: #0c0c0c;
-  padding:14px 16px;
-  border:none;            /* sin líneas por celda */
-}
-
-/* Filas: sin “inset lines” ni bordes inferiores */
-.tabla-oscura .mat-mdc-row,
-.tabla-empleados .mat-mdc-row,
-.tabla-oscura tbody tr,
-.tabla-empleados tbody tr{
-  box-shadow:none !important;
-  border:none !important;
+/* Filas: SIN “inset” ni borde inferior */
+.tabla-oscura tbody tr{
+  box-shadow: none !important;        /* quita cualquier inset heredado */
+  border: none;
   transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
 }
 
-/* Hover (sutil, sin dibujar líneas) */
-.tabla-oscura tbody tr:hover,
-.tabla-empleados tbody tr:hover{
-  background:#32363a;
-  box-shadow:0 4px 12px rgba(0,0,0,.25);
+/* Hover (sutil, sin líneas) */
+.tabla-oscura tbody tr:hover{
+  background: #32363a;                /* un pelín más claro que #2f3336 */
+  box-shadow: 0 4px 12px rgba(0,0,0,.25);
   transform: translateY(-1px);
-  position:relative;
-  z-index:1;
+  position: relative;
+  z-index: 1;
 }
 
-/* Base de tabla */
-.tabla-oscura .mat-mdc-table,
-.tabla-empleados .mat-mdc-table,
-.tabla-oscura table,
-.tabla-empleados table{
-  width:100%;
-  table-layout:fixed;
-  border-collapse:separate; /* evita artefactos con sombras */
+/* Primera columna: icono teal */
+
+
+/* Acciones tipo glass */
+.btn-fantasma.mat-mdc-stroked-button{
+  background: rgba(255,255,255,0.20) !important;
+  border: 2px solid rgba(255,255,255,0.30) !important;
+  color:#2c3e50 !important; border-radius:10px !important; transition: all .3s;
+}
+.btn-fantasma.mat-mdc-stroked-button:hover{
+  background: rgba(255,255,255,0.40) !important; color:#2c3e50 !important;
 }
 
-/* Altura y overflow */
-.tabla-oscura .mat-mdc-row,
-.tabla-empleados .mat-mdc-row,
-.tabla-oscura .mat-mdc-header-row,
-.tabla-empleados .mat-mdc-header-row{ height:64px; }
-.tabla-oscura .mat-mdc-cell,
-.tabla-empleados .mat-mdc-cell,
-.tabla-oscura .mat-mdc-header-cell,
-.tabla-empleados .mat-mdc-header-cell{ overflow:visible; }
-
-/* Avatar (si aplica) */
-.tabla-oscura .mat-column-avatar,
-.tabla-empleados .mat-column-avatar{
-  width:64px; min-width:64px; max-width:64px; padding:0 8px 0 16px;
-}
-.avatar-cell{ display:flex; align-items:center; justify-content:center; }
-.avatar-icon, .avatar{ width:40px; height:40px; border-radius:50%; display:block; }
-.avatar-icon{ font-size:40px; line-height:40px; color:#110243; }
-
-/* Columna Acciones */
-.tabla-oscura .mat-column-acciones,
-.tabla-empleados .mat-column-acciones{
-  width:96px; min-width:96px; max-width:96px; padding:0 16px;
-}
-.acciones-cell{ display:flex; justify-content:flex-end; gap:8px; }
-
-/* Badges de estado */
+/* Badges estado */
 .etiqueta{ padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; }
 .etiqueta.exito{ background:#def7ec; color:#065f46; }
 .etiqueta.peligro{ background:#ffe4e6; color:#9f1239; }
 
-/* Responsive tabla */
-@media (max-width:700px){
-  .tabla-oscura .mat-column-avatar,
-  .tabla-empleados .mat-column-avatar{ width:56px; min-width:56px; max-width:56px; }
+/* Estilo común para botones de acción */
+.btn-accion {
+  color: #b0b0b0 !important; /* gris claro */
+  transition: color 0.2s ease-in-out;
 }
 
-/* ================== FIX BOTONES (FORZADO) ================== */
-/* RAISED — PRIMARIO TEAL */
-.mat-mdc-raised-button.btn-primario,
-.mat-mdc-unelevated-button.btn-primario {
-  /* Tokens MDC */
-  --mdc-protected-button-container-color: #1abc9c;
-  --mdc-protected-button-label-text-color: #ffffff;
-
-  /* Forzar colores reales */
-  background-color: var(--mdc-protected-button-container-color) !important;
-  color: var(--mdc-protected-button-label-text-color) !important;
-
-  border-radius: 10px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,.2) !important;
+.btn-accion:hover {
+  color: #ffffff !important; /* se ponen blancos al pasar el mouse */
 }
 
-/* Texto e ícono visibles SIEMPRE dentro del botón */
-.btn-primario .mdc-button__label,
-.btn-primario mat-icon {
-  color: inherit !important;
-  opacity: 1 !important;
-  display: inline-flex !important;
-  align-items: center;
+.icon-muted { opacity: .4; }
+
+/* ---- Fix icono "Tableros" (btn-fantasma) ---- */
+/* color del texto del botón + el icono en azul marino */
+.btn-fantasma.mat-mdc-stroked-button{
+  color:#0b2f5e !important;            /* texto del botón */
+  background:#2c3e50 !important;
+  border:1px solid #e5e7eb !important;
 }
 
-/* OUTLINED/STROKED — FANTASMA (TABLEROS) */
-.mat-mdc-outlined-button.btn-fantasma,
-.mat-mdc-stroked-button.btn-fantasma {
-  /* Tokens MDC */
-  --mdc-outlined-button-label-text-color: #0b2f5e;
-  --mdc-outlined-button-outline-color: #d1d5db;
-
-  /* Forzar look */
-  background-color: #ffffff !important;
-  color: var(--mdc-outlined-button-label-text-color) !important;
-  border-color: var(--mdc-outlined-button-outline-color) !important;
-
-  border-width: 1px !important;
-  border-style: solid !important;
-  border-radius: 10px !important;
+.btn-fantasma.mat-mdc-stroked-button mat-icon,
+.btn-fantasma .mat-icon{
+  color:#0b2f5e !important;            /* color del icono */
+  display:inline-flex !important;      /* asegura que se renderice */
+  align-items:center;
+  justify-content:center;
+  font-size:20px !important;           /* evita quedarlo a 0/pequeño */
+  width:20px; height:20px;
+  margin-right:6px;                     /* separación con el texto */
+  opacity:1 !important;
 }
 
-/* Etiqueta e ícono heredan correctamente el color */
-.btn-fantasma .mdc-button__label,
-.btn-fantasma mat-icon {
-  color: inherit !important;
-  opacity: 1 !important;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px !important;
-  width: 20px; height: 20px;
-  margin-right: 6px;
+/* Evita que el header imponga color blanco a los iconos */
+.tarjeta-encabezado{ color:#111827 !important; }
+.tarjeta-encabezado h2{ color:#111827 !important; }
+.tarjeta-encabezado .texto-muted{ color:#6b7280 !important; }
+
+/* Mantén el icono de "Nuevo" en blanco para contraste */
+.tarjeta-encabezado .btn-primario mat-icon{ color:#fff !important; }
+
+/* Icono "groups" también en azul marino */
+.tarjeta-encabezado > mat-icon{ color:#0b2f5e !important; font-size:28px; line-height:1; }
+
+/* =========================
+   FIX FINAL: Botón TABLEROS
+   ========================= */
+
+/* No heredar blanco en el encabezado */
+.tarjeta-encabezado{ color:#111827 !important; }
+
+/* Tableros: azul marino visible sobre blanco */
+.tarjeta-encabezado .btn-fantasma.mat-mdc-stroked-button,
+.tarjeta-encabezado .btn-fantasma.mat-mdc-outlined-button{
+  background:#ffffff !important;
+  border:1px solid #d1d5db !important;
+  color:#0b2f5e !important;                           /* texto + icono */
+  border-radius:10px !important;
+
+  /* Tokens de MDC (Angular Material) para garantizar el color */
+  --mdc-outlined-button-label-text-color:#0b2f5e;
+  --mdc-outlined-button-outline-color:#d1d5db;
 }
 
-/* ===== FIX DEFINITIVO: TABLEROS SIEMPRE VISIBLE ===== */
-button.mat-mdc-outlined-button.btn-fantasma,
-button.mat-mdc-stroked-button.btn-fantasma {
-  /* Fondo/borde */
-  background-color: #ffffff !important;
-  border: 1px solid #d1d5db !important;
-  border-radius: 10px !important;
-
-  /* Color del botón (base + tokens MDC) */
-  color: #0b2f5e !important;
-  --mdc-outlined-button-label-text-color: #0b2f5e;
-  --mdc-outlined-button-outline-color: #d1d5db;
+/* Asegurar el color del label interno de MDC y del icono */
+.tarjeta-encabezado .btn-fantasma .mdc-button__label{
+  color:inherit !important;
+}
+.tarjeta-encabezado .btn-fantasma mat-icon{
+  color:inherit !important;
+  display:inline-flex !important;
+  align-items:center; justify-content:center;
+  font-size:20px !important; width:20px; height:20px;
+  margin-right:6px;
+  opacity:1 !important;
 }
 
-/* Asegurar color del texto e ícono (evita herencia en blanco) */
-button.mat-mdc-outlined-button.btn-fantasma .mdc-button__label,
-button.mat-mdc-stroked-button.btn-fantasma .mdc-button__label,
-button.mat-mdc-outlined-button.btn-fantasma mat-icon,
-button.mat-mdc-stroked-button.btn-fantasma mat-icon {
-  color: #0b2f5e !important;
-  opacity: 1 !important;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px !important;
-  width: 20px; height: 20px;
-  margin-right: 6px;
-}
-
-/* Botón primario (Nuevo) — visible siempre */
-button.mat-mdc-raised-button.btn-primario,
-button.mat-mdc-unelevated-button.btn-primario {
-  --mdc-protected-button-container-color: #1abc9c;
-  --mdc-protected-button-label-text-color: #ffffff;
-  background-color: var(--mdc-protected-button-container-color) !important;
-  color: var(--mdc-protected-button-label-text-color) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,.2) !important;
-}
-button.mat-mdc-raised-button.btn-primario .mdc-button__label,
-button.mat-mdc-raised-button.btn-primario mat-icon {
-  color: inherit !important;
-  opacity: 1 !important;
-  display: inline-flex !important;
-  align-items: center;
-}
-
-/* ===== BUGFIX: label de TABLEROS comprimido por width/height ===== */
-
-/* Reset del label: que ocupe su ancho real y no 20x20 */
-.btn-fantasma .mdc-button__label {
-  display: inline-block !important;
-  width: auto !important;
-  height: auto !important;
-  margin-left: 6px !important;   /* espacio después del icono */
-  margin-right: 0 !important;
-  font-size: 14px !important;    /* o el que uses en tu UI */
-  line-height: 1.2 !important;
-  white-space: nowrap !important;
-  color: #0b2f5e !important;     /* evita heredar blanco del contenedor */
-  opacity: 1 !important;
-}
-
-/* El tamaño fijo SOLO para el icono */
-.btn-fantasma mat-icon {
-  width: 20px !important;
-  height: 20px !important;
-  font-size: 20px !important;
-  margin-right: 6px !important;
-  flex: 0 0 auto;
-  color: #0b2f5e !important;     /* consistente con el label */
-}
-
-/* Asegura el contenedor del botón */
-button.mat-mdc-outlined-button.btn-fantasma,
-button.mat-mdc-stroked-button.btn-fantasma {
-  background-color: #ffffff !important;
-  border: 1px solid #d1d5db !important;
-  border-radius: 10px !important;
-  color: #0b2f5e !important;
-  --mdc-outlined-button-label-text-color: #0b2f5e;
-  --mdc-outlined-button-outline-color: #d1d5db;
-}
+/* Mantén el icono de “Nuevo” en blanco para contraste */
+.tarjeta-encabezado .btn-primario mat-icon{ color:#ffffff !important; }
