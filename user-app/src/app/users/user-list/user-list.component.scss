@@ -33,6 +33,7 @@
 
 .tabla-contenedor {
   overflow-x: auto;
+  border-width: 1px;
 }
 
 .tabla-estilizada {
@@ -42,14 +43,14 @@
 }
 
 .tabla-estilizada th {
-  background: #009688;
-  color: #fff;
+  background: #486284;
+  color: #ffffff;
   font-weight: bold;
 }
 
 .tabla-estilizada td {
-  background: #2d2d2d;
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
 }
 
 /* Estados como chips */
@@ -88,10 +89,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Quitar línea SOLO en la columna de acciones */
-.mat-column-acciones {
-  border-bottom: none !important;
-}
+
 
 /* Mostrar \n como saltos de línea en todos los snackbars */
 .success-snackbar,
@@ -106,7 +104,7 @@
   background: #ffffff;
   color: #111827;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 8px 16px rgba(17,24,39,.15);
+  box-shadow: 0 8px 16px rgba(208, 212, 223, 0.15);
 }
 
 /* Color del botón de acción "Eliminar" dentro del snackbar de confirmación */
@@ -114,4 +112,80 @@
   color: #dc2626 !important;      /* rojo visible */
   font-weight: 800;
   text-transform: none;
+  background-color: #e5e7eb;
 }
+
+/* --- FORZAR: quitar el borde de las filas MDC (la “línea gruesa”) --- */
+:host ::ng-deep .mat-mdc-table .mdc-data-table__row,
+:host ::ng-deep .mat-mdc-table .mat-mdc-row {
+  border-bottom: 0 !important;
+}
+:host ::ng-deep .mat-mdc-table .mdc-data-table__row::before,
+:host ::ng-deep .mat-mdc-table .mdc-data-table__row::after {
+  content: none !important;
+  display: none !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* --- Volver a poner un borde fino en las celdas, EXCEPTO ACCIONES --- */
+:host ::ng-deep .mat-mdc-table .mat-mdc-cell,
+:host ::ng-deep .mat-mdc-table .mat-mdc-header-cell {
+  border-bottom: 1px solid rgba(0,0,0,0.08) !important;
+}
+:host ::ng-deep .mat-mdc-table .mat-mdc-cell.mat-column-acciones,
+:host ::ng-deep .mat-mdc-table .mat-mdc-header-cell.mat-column-acciones {
+  border-bottom: 0 !important;
+}
+
+/* --- Por si dentro de ACCIONES hay algo que dibuja línea (toolbar/divider/hr) --- */
+:host ::ng-deep .mat-column-acciones .mat-toolbar,
+:host ::ng-deep .mat-column-acciones .mat-toolbar-row,
+:host ::ng-deep .mat-column-acciones mat-divider,
+:host ::ng-deep .mat-column-acciones .mat-divider,
+:host ::ng-deep .mat-column-acciones hr {
+  box-shadow: none !important;
+  border: 0 !important;
+  background: transparent !important;
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+}
+
+/* --- Fallback “anti-último-recurso”: tapa cualquier resto en ACCIONES --- */
+:host ::ng-deep .mat-mdc-cell.mat-column-acciones {
+  position: relative;
+}
+:host ::ng-deep .mat-mdc-cell.mat-column-acciones::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 3px;                /* cubre incluso líneas gruesas */
+  background: #ffffff;        /* mismo fondo de tu tabla */
+  pointer-events: none;
+}
+
+/* Quitar por la fuerza la “línea gruesa” bajo la última celda (ACCIONES) */
+:host ::ng-deep .mat-mdc-table .mat-mdc-row .mat-mdc-cell:last-child::after,
+:host ::ng-deep .mat-mdc-table .mat-mdc-header-row .mat-mdc-header-cell:last-child::after,
+:host ::ng-deep .mat-mdc-table .mat-mdc-row .mat-mdc-cell.mat-column-acciones::after {
+  display: none !important;
+  content: "" !important;
+  border: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Asegura que la fila no añada bordes extras */
+:host ::ng-deep .mat-mdc-table .mat-mdc-row::after,
+:host ::ng-deep .mat-mdc-table .mat-mdc-header-row::after {
+  display: none !important;
+  content: "" !important;
+}
+
+/* (Opcional) Si aún heredara un color de divider del tema, neutralízalo en la tabla */
+:host ::ng-deep .mat-mdc-table {
+  --mdc-data-table-divider-color: transparent !important;
+  --mdc-data-table-row-bottom-color: transparent !important; /* algunas builds */
+}
+

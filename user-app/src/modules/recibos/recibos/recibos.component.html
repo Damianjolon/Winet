@@ -1,1 +1,142 @@
-<p>recibos works!</p>
+<section class="app-superficie">
+  <div class="card-elevada tarjeta">
+
+    <!-- Encabezado -->
+    <div class="tarjeta-encabezado">
+      <div class="head-icon">🧾</div>
+      <div>
+        <h2>Nuevo Recibo</h2>
+        <p class="texto-subtitulo">Arrastra servicios desde el catálogo y completa los datos.</p>
+      </div>
+
+      <span class="spacer"></span>
+
+      <a class="btn-secundario" routerLink="/recibos">🗂️ Listado</a>
+      <button class="btn-secundario" [disabled]="!creado" (click)="openPreview()">🖨️ Previsualizar</button>
+      <button class="btn-secundario" [disabled]="!creado" (click)="openWhatsApp()">🟢 WhatsApp</button>
+    </div>
+
+    <!-- Cuerpo -->
+    <div class="tarjeta-cuerpo">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="recibo-grid" autocomplete="off">
+
+        <!-- Izquierda: catálogo -->
+        <div>
+          <label class="lbl">Buscar servicio</label>
+          <input class="input" type="text" placeholder="Nombre o código..." formControlName="buscarServicio" />
+
+          <div class="catalogo" (drop)="drop($event)" (dragover)="allowDrop($event)">
+            <div class="servicio-item" *ngFor="let s of servicios" draggable="true" (dragstart)="dragStart($event, s)">
+              <div class="titulo">{{ s.nombre }}</div>
+              <div class="det">Q {{ s.precio_unitario | number:'1.2-2' }} • IVA {{ s.impuesto_pct }}%</div>
+              <button type="button" class="add-btn" (click)="addServicio(s)" title="Agregar">+</button>
+            </div>
+
+            <div *ngIf="serviciosLoading" class="texto-muted">Cargando…</div>
+          </div>
+        </div>
+
+        <!-- Derecha: recibo -->
+        <div>
+          <!-- Autocomplete de cliente -->
+          <div class="cliente-autocomplete">
+            <label class="lbl">Cliente</label>
+            <input
+              class="input"
+              type="text"
+              [value]="clienteInput"
+              (input)="onClienteInput(($any($event.target)).value)"
+              (focus)="showSug = !!clientesSug.length"
+              (blur)="hideSugLater()"
+              placeholder="Escribe para buscar…"
+            />
+            <ul class="sug" *ngIf="showSug">
+              <li *ngFor="let c of clientesSug; trackBy: trackById"
+                  (mousedown)="seleccionarCliente(c)">
+                {{ c.nombre }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="grid2">
+            <div>
+              <label class="lbl">No. Correlativo</label>
+              <input class="input" type="number" formControlName="numero" />
+            </div>
+            <div>
+              <label class="lbl">Fecha</label>
+              <input class="input" type="date" formControlName="fecha" />
+            </div>
+          </div>
+
+          <label class="lbl">Notas</label>
+          <textarea class="textarea" rows="3" formControlName="notas" placeholder="Opcional…"></textarea>
+
+          <div class="dropbox" (drop)="drop($event)" (dragover)="allowDrop($event)">
+            Arrastra servicios aquí
+          </div>
+
+          <!-- Tabla de items -->
+          <div class="tabla">
+            <div class="t-head">
+              <div>Descripción</div>
+              <div>Cant.</div>
+              <div>Precio</div>
+              <div>Desc.%</div>
+              <div>IVA%</div>
+              <div>Total</div>
+              <div></div>
+            </div>
+
+            <div class="t-row" *ngFor="let it of items; let i = index">
+              <div class="t-cell">{{ it.descripcion }}</div>
+
+              <div class="t-cell qty">
+                <button type="button" (click)="changeCantidad(i, -1)">−</button>
+                <input type="number" [(ngModel)]="items[i].cantidad" [ngModelOptions]="{standalone:true}"
+                       (ngModelChange)="recalcular()" min="0" />
+                <button type="button" (click)="changeCantidad(i, 1)">+</button>
+              </div>
+
+              <div class="t-cell">Q {{ it.precio_unitario | number:'1.2-2' }}</div>
+
+              <div class="t-cell">
+                <input type="number" [(ngModel)]="it.descuento_pct" [ngModelOptions]="{standalone:true}"
+                       (ngModelChange)="recalcular()" min="0" class="pct" />
+              </div>
+
+              <div class="t-cell">
+                <input type="number" [(ngModel)]="it.impuesto_pct" [ngModelOptions]="{standalone:true}"
+                       (ngModelChange)="recalcular()" min="0" class="pct" />
+              </div>
+
+              <div class="t-cell">Q {{ lineaTotal(it) | number:'1.2-2' }}</div>
+              <div class="t-cell">
+                <button type="button" class="danger" (click)="remove(i)">🗑️</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Totales -->
+          <div class="totales">
+            <div>Subtotal: <strong>Q {{ subtotal | number:'1.2-2' }}</strong></div>
+            <div>Descuento: <strong>Q {{ descuento_total | number:'1.2-2' }}</strong></div>
+            <div>Impuesto: <strong>Q {{ impuesto_total | number:'1.2-2' }}</strong></div>
+            <div class="gran-total">TOTAL: <strong>Q {{ total | number:'1.2-2' }}</strong></div>
+          </div>
+
+          <div class="acciones">
+            <button type="button" class="btn-secundario" routerLink="/recibos">Cancelar</button>
+            <button type="submit" class="btn-primario" [disabled]="guardando || items.length===0 || form.invalid">
+              {{ guardando ? 'Guardando…' : 'Guardar' }}
+            </button>
+          </div>
+
+          <div *ngIf="creado" class="ok">
+            ✅ Guardado: Recibo #{{ creado.numero }} (ID {{ creado.id }})
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

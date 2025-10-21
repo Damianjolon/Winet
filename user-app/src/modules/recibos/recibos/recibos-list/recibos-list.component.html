@@ -1,0 +1,59 @@
+<section class="app-superficie">
+  <div class="card-elevada tarjeta">
+
+    <div class="tarjeta-encabezado">
+      <div class="head-icon">🗂️</div>
+      <div>
+        <h2>Recibos</h2>
+        <p class="texto-subtitulo">Listado de recibos emitidos.</p>
+      </div>
+      <span class="spacer"></span>
+      <a class="btn-secundario" routerLink="/recibos/nuevo">➕  </a>
+    </div>
+
+    <div class="tarjeta-cuerpo">
+
+      <input class="input mb" type="text" placeholder="Buscar por número, cliente o notas…"
+             [value]="q" (input)="onQuery(($any($event.target)).value)" />
+
+      <div class="tabla tabla-lista">
+        <div class="t-head">
+          <div>No. Correlativo</div>
+          <div>Fecha</div>
+          <div>Cliente</div>
+          <div>Subtotal</div>
+          <div>Impuesto</div>
+          <div>Total</div>
+          <div>Estado</div>
+          <div></div>
+        </div>
+
+        <div *ngFor="let r of items" class="t-row">
+          <div><strong>{{ r.numero }}</strong></div>
+          <div>{{ r.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+          <div>
+            <div class="cliente">{{ r.cliente_nombre || '—' }}</div>
+            <div class="texto-muted mini" *ngIf="r.items_preview">{{ r.items_preview }}</div>
+          </div>
+          <div class="num">{{ money(r.subtotal) }}</div>
+          <div class="num">{{ money(r.impuesto_total) }}</div>
+          <div class="num"><strong>{{ money(r.total) }}</strong></div>
+          <div><span class="badge">{{ r.estado }}</span></div>
+          <div><button class="btn-secundario" (click)="openPreview(r.id)">🖨️ Previsualizar</button></div>
+        </div>
+
+        <div *ngIf="!items.length" class="empty" [class.loading]="loading">
+          {{ loading ? 'Cargando…' : 'Sin resultados' }}
+        </div>
+      </div>
+
+      <div class="paginador">
+        <button class="btn-secundario" (click)="go(page-1)">←</button>
+        <span class="texto-muted">
+          Página {{ page }} / {{ Math.max(1, Math.ceil(total/pageSize)) }}
+        </span>
+        <button class="btn-secundario" (click)="go(page+1)">→</button>
+      </div>
+    </div>
+  </div>
+</section>
