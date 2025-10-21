@@ -5,8 +5,29 @@ function isValidEmail(s) { return !s || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
 
 async function listar(req, res, next) {
   try {
-    const { q, estado, municipio, page, pageSize, sort, order } = req.query;
-    const data = await repo.listar({ q, estado, municipio, page, pageSize, sort, order });
+    // Anti-cache contundente para evitar 304 con cuerpo vacío
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store',
+      'Vary': 'Accept-Encoding'
+    });
+    // ETag variable en cada respuesta
+    res.set('ETag', `${Date.now()}-${Math.random()}`);
+
+    const { q, estado, municipio, departamento, page, pageSize, sort, order, lite } = req.query;
+    const data = await repo.listar({ q, estado, municipio, departamento, page, pageSize, sort, order });
+
+    if (String(lite) === '1') {
+      // Respuesta liviana para autocomplete
+      return res.json(data.items.map(c => ({
+        id: c.id,
+        nombre: c.nombre,
+        Telefono: c.telefono ?? c.Telefono ?? null,
+      })));
+    }
+
     res.json(data);
   } catch (e) { next(e); }
 }

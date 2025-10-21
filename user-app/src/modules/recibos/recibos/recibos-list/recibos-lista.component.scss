@@ -1,0 +1,108 @@
+@use '../recibos.component.scss' as *;
+
+.mb { margin-bottom: 12px; }
+
+.tabla-lista {
+  .t-head, .t-row {
+    display: grid;
+    grid-template-columns: 90px 180px 1fr 150px 150px 160px 120px 160px;
+    gap: 10px;
+    align-items: center;
+  }
+  .t-row {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 10px 0;
+    color: #333333; // Dark color for text in table rows
+  }
+  .num {
+    text-align: right;
+    color: #333333; // Dark text for numbers
+  }
+  .badge {
+    background: #457bc3;
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+  }
+  .empty {
+    text-align: center;
+    color: #333333; // Darker color for empty state message
+    padding: 24px 0;
+  }
+  .empty.loading {
+    color: #0f3b67;
+  }
+}
+
+.paginador {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 14px;
+  color: #333333; // Dark color for pagination
+}
+
+// Styles for the Listado de Recibos component
+$primary-color: #d6d6d6;
+$header-bg-color: #010146; // Dark background for headers
+$text-color: #333333; // Darker text color for better visibility
+$azul-marino: #0b2e5b; // azul marino
+h2 {
+  color: $primary-color;
+}
+
+.table-header {
+  background: #010146;
+  color: #333333; // Dark text color for table headers
+  font-weight: bold;
+}
+
+.table-item {
+  background-color: #424242;
+  color: $text-color; // Dark color for text inside table items
+  padding: 10px;
+}
+
+button {
+  background-color: $primary-color;
+  color: white;
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+}
+
+input {
+  border: 1px solid $primary-color;
+  &:focus {
+    border-color: darken($primary-color, 10%);
+  }
+  color: $text-color; // Ensure input text is dark for contrast
+}
+
+.texto-subtitulo {
+  color: #1b1b1c; // Darker color for subtitlesa
+}
+
+  /* Alineación derecha de columnas numéricas (encabezado y filas) */
+  .t-head > div:nth-child(4),
+  .t-head > div:nth-child(5),
+  .t-head > div:nth-child(6),
+  .t-row  > div:nth-child(4),
+  .t-row  > div:nth-child(5),
+  .t-row  > div:nth-child(6) {
+    justify-self: end;
+    text-align: right;
+    white-space: nowrap;  /* evita saltos que descuadran */
+  }
+
+  /* Quitar la línea inferior del enlace con estilo de botón */
+a.btn-secundario,
+a.btn-secundario:link,
+a.btn-secundario:visited,
+a.btn-secundario:hover,
+a.btn-secundario:focus,
+a.btn-secundario:active {
+  text-decoration: none !important;
+}
