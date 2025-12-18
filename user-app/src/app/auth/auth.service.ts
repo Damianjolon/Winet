@@ -62,50 +62,93 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { environment } from '../environments/environment';
+
+export interface AuthLoginResponse {
+  ok: boolean;
+  token?: string;
+  user?: any;
+  message?: string;
+}
+
+export interface ApiResult {
+  ok: boolean;
+  message?: string;
+  [k: string]: any;
+}
+
+export interface ChangePasswordDTO {
+  usuario: string;
+  oldPassword: string;
+  newPassword: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private base = '/auth'; // ajusta si usas proxy o env
+  /**
+   * Si tienes base en env (p. ej. http://host/api/webapi/), se normaliza y se le añade /auth.
+   * Si no hay env, usa '/auth' (compatible con proxy.conf).
+   */
+  private base: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const api = (environment as any)?.restApiServiceBaseUri as string | undefined;
+    // normaliza para evitar dobles slashes
+    this.base = api ? `${api.replace(/\/+$/, '')}/auth` : '/auth';
+  }
 
   login(usuario: string, password: string, remember = false): Observable<boolean> {
-    return this.http.post<any>(`${this.base}/login`, { usuario, password, remember }).pipe(
-      tap(resp => {
+    return this.http.post<AuthLoginResponse>(`${this.base}/login`, { usuario, password, remember }).pipe(
+      tap((resp: AuthLoginResponse) => {
         if (resp?.ok && resp.token) {
           localStorage.setItem('token', resp.token);
-          localStorage.setItem('user', JSON.stringify(resp.user));
+          localStorage.setItem('user', JSON.stringify(resp.user ?? null));
           localStorage.setItem('isLoggedIn', 'true');
         }
       }),
-      map(resp => !!resp?.ok)
+      map((resp: AuthLoginResponse) => !!resp?.ok)
     );
   }
 
-  me() {
-    return this.http.get<any>(`${this.base}/me`);
+  me(): Observable<ApiResult> {
+    return this.http.get<ApiResult>(`${this.base}/me`);
   }
 
-  logout() {
+  logout(): Observable<boolean> {
     const hasToken = !!localStorage.getItem('token');
     if (!hasToken) {
       this.clearLocal();
       return of(true);
     }
-    return this.http.post<any>(`${this.base}/logout`, {}).pipe(
-      tap(() => this.clearLocal())
+    return this.http.post<ApiResult>(`${this.base}/logout`, {}).pipe(
+      tap(() => this.clearLocal()),
+      map(() => true)
     );
   }
 
-  forgotPassword(usuarioOrEmail: string) {
-    return this.http.post<any>(`${this.base}/forgot-password`, { usuarioOrEmail });
+  forgotPassword(usuarioOrEmail: string): Observable<ApiResult> {
+    return this.http.post<ApiResult>(`${this.base}/forgot-password`, { usuarioOrEmail });
   }
 
-  resetPassword(token: string, newPassword: string) {
-    return this.http.post<any>(`${this.base}/reset-password`, { token, newPassword });
+  resetPassword(token: string, newPassword: string): Observable<ApiResult> {
+    return this.http.post<ApiResult>(`${this.base}/reset-password`, { token, newPassword });
   }
 
-  private clearLocal() {
+  changePassword(body: ChangePasswordDTO): Observable<ApiResult> {
+    // Ajusta la ruta si tu backend usa otra (p. ej. '/usuarios/change-password')
+    return this.http.post<ApiResult>(`${this.base}/change-password`, body);
+  }
+
+  // Helpers opcionales
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  get isLoggedIn(): boolean {
+    return localStorage.getItem('isLoggedIn') === 'true';
+  }
+
+  private clearLocal(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('isLoggedIn');
