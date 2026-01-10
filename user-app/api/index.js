@@ -1,6 +1,3 @@
-// user-app/api/index.js
-// Este archivo conecta Vercel con tu backend express existente
-
+// user-app/api/[...path].js
 const app = require('../backend/src/index.js');
-
 module.exports = app;
