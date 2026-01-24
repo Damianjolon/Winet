@@ -1,0 +1,411 @@
+@import 'src/styles.scss';
+
+/* ==================== ESTRUCTURA ==================== */
+.app-superficie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px;
+  min-height: calc(100vh - 64px);
+  background: #f8fafc;
+}
+
+.tarjeta-encabezado,
+.tarjeta-cuerpo {
+  width: 100%;
+  max-width: 1200px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  padding: 24px 32px;
+  box-sizing: border-box;
+}
+
+.tarjeta-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.encabezado-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.encabezado-izquierda mat-icon {
+  font-size: 36px;
+  color: var(--azul-marino);
+}
+
+.encabezado-izquierda h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+  color: #0b2f5e;
+}
+
+.texto-muted {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-top: 2px;
+}
+
+.encabezado-derecha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ==================== FILTROS ==================== */
+.filtros {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.input-oscuro .mat-mdc-text-field-wrapper {
+  background: #f3f4f6 !important;
+  border-radius: 12px !important;
+}
+
+.input-oscuro .mat-mdc-form-field-flex {
+  color: #111827 !important;
+}
+
+@media (max-width: 900px) {
+  .filtros {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================== TABLA ==================== */
+.tabla-contenedor {
+  overflow-x: auto;
+  border-radius: 15px;
+}
+
+.tabla-oscura {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(190, 93, 93, 0.1);
+}
+
+.tabla-oscura thead th {
+  background: #486284;
+  color: #fff;
+  font-weight: 700;
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.tabla-oscura tbody td {
+  background: #fff;
+  padding: 14px 12px;
+  font-size: 0.93rem;
+  color: #111827;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tabla-oscura tbody tr:hover {
+  background: #f1f5f9;
+  transition: all 0.2s ease-in-out;
+}
+
+/* ==================== ETIQUETAS ==================== */
+.etiqueta {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.etiqueta.exito {
+  background: #def7ec;
+  color: #065f46;
+}
+
+.etiqueta.peligro {
+  background: #fee2e2;
+  color: #9f1239;
+}
+
+/* ==================== ACCIONES ==================== */
+.acciones-cell {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-accion {
+  color: #9ca3af !important;
+  transition: color 0.2s ease-in-out;
+}
+
+.btn-accion:hover {
+  color: #111827 !important;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .tarjeta-encabezado,
+  .tarjeta-cuerpo {
+    padding: 16px;
+  }
+
+  .encabezado-izquierda h2 {
+    font-size: 1.3rem;
+  }
+
+  .tabla-oscura thead th,
+  .tabla-oscura tbody td {
+    font-size: 0.85rem;
+    padding: 10px 8px;
+  }
+}
+
+.centrado {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* =========================================================
+   BOTONES MEJORADOS (visibles sobre fondo blanco)
+   ========================================================= */
+
+/* ---- Primario (verde teal) ---- */
+.btn-primario {
+  background-color: var(--teal) !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+  font-weight: 600;
+}
+
+.btn-primario mat-icon {
+  color: #ffffff !important;
+  margin-right: 6px;
+}
+
+/* ---- Fantasma (contorno) ---- */
+.btn-fantasma.mat-mdc-stroked-button,
+.btn-fantasma.mat-mdc-outlined-button {
+  background-color: #f1f5f9 !important;     /* gris azulado claro */
+  border: 1px solid #d1d5db !important;     /* contorno gris */
+  color: #0b2f5e !important;                /* texto azul marino */
+  border-radius: 10px !important;
+  font-weight: 600;
+  transition: all .25s ease-in-out;
+}
+
+.btn-fantasma.mat-mdc-stroked-button:hover {
+  background-color: #e2e8f0 !important;     /* hover ligeramente más oscuro */
+  border-color: #94a3b8 !important;
+}
+
+/* ---- Íconos dentro de los botones ---- */
+.btn-fantasma mat-icon,
+.btn-primario mat-icon {
+  color: inherit !important;                /* hereda color del botón */
+  opacity: 1 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px !important;
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+}
+
+/* ---- Texto dentro del botón ---- */
+.btn-fantasma .mdc-button__label,
+.btn-primario .mdc-button__label {
+  color: inherit !important;
+  font-weight: 600;
+}
+
+/* ---- Estado hover para primario ---- */
+.btn-primario:hover {
+  background-color: #101f6f !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, .25);
+}
+
+.btn-fantasma:hover {
+  background-color: rgba(11,47,94,0.1) !important;
+  border-color: var(--azul-marino) !important;
+  color: var(--azul-marino) !important;
+}
+
+/* ======== FIX SWEETALERT SELECT ======== */
+.swal2-popup select.swal2-input {
+  width: 80% !important;
+  padding: 10px 12px !important;
+  border-radius: 5px !important;
+  border: 1px solid #d1d5db !important;
+  background-color: #fff !important;
+  color: #111827 !important;
+  font-size: 14px !important;
+  outline: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230b2f5e'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.swal2-popup select.swal2-input:focus {
+  border-color: #1abc9c !important;
+  box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2) !important;
+}
+
+
+.swal2-popup select.swal2-input {
+  width: 80% !important;
+  border-radius: 6px !important;
+  border: 1px solid #ccc !important;
+  padding: 10px !important;
+  background: #fff !important;
+  color: #111 !important;
+  font-size: 14px !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230b2f5e'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.badge-alerta {
+  background: #e74c3c; /* rojo alerta */
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 6px;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  vertical-align: middle;
+}
+
+.badge-alerta {
+  background: #e74c3c; /* rojo alerta */
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 6px;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  vertical-align: middle;
+}
+
+/* ===================== DASHBOARD ===================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+/* Card base */
+.card-dashboard {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-dashboard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+
+/* Icono circular */
+.card-dashboard .icono {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 30px;
+  flex-shrink: 0;
+}
+
+.card-dashboard mat-icon {
+  font-size: 30px;
+  color: #fff !important;
+}
+
+/* Contenido (texto y número) */
+.card-dashboard .contenido {
+  flex: 1;
+}
+
+.card-dashboard h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  color: rgba(255,255,255,0.9);
+}
+
+.card-dashboard p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 4px 0 0;
+}
+
+/* Colores temáticos */
+.bg-azul {
+  background: linear-gradient(135deg, #0b2f5e 0%, #234f80 100%);
+}
+
+.bg-verde {
+  background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+}
+
+.bg-rojo {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.bg-naranja {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+  .card-dashboard {
+    padding: 14px 16px;
+  }
+  .card-dashboard p {
+    font-size: 1.4rem;
+  }
+}

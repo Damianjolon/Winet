@@ -1,0 +1,146 @@
+<section class="app-superficie">
+  <!-- ================= CABECERA ================= -->
+  <div class="tarjeta-encabezado">
+    <div class="encabezado-izquierda">
+      <mat-icon>inventory_2</mat-icon>
+      <div>
+        <h2>Inventario</h2>
+        <p class="texto-muted">Gestión de existencias y movimientos</p>
+      </div>
+    </div>
+
+
+
+    <div class="encabezado-derecha">
+      <button mat-stroked-button class="btn-fantasma" (click)="exportarKardex()">
+        <mat-icon>file_download</mat-icon> Exportar
+      </button>
+
+   <button mat-stroked-button class="btn-fantasma flex items-center gap-2" (click)="verAlertas()">
+  <mat-icon>warning</mat-icon>
+  Alertas
+  <span *ngIf="alertasPendientes > 0"
+        class="ml-2 bg-red-600 text-white text-xs font-semibold rounded-full px-2 py-0.5">
+    {{ alertasPendientes }}
+  </span>
+</button>
+
+
+      <button mat-raised-button class="btn-primario" (click)="nuevoMovimiento()">
+        <mat-icon>add</mat-icon> Movimiento
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= CUERPO ================= -->
+  <div class="tarjeta-cuerpo">
+    <!-- ===== FILTROS ===== -->
+    <div class="filtros">
+      <mat-form-field appearance="fill" class="input-oscuro">
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          placeholder="Buscar producto, tipo o referencia..."
+          [(ngModel)]="filtroTexto"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="input-oscuro">
+        <mat-select placeholder="Tipo de movimiento" [(value)]="filtroTipo">
+          <mat-option value="TODOS">Todos</mat-option>
+          <mat-option value="ENTRADA">Entradas</mat-option>
+          <mat-option value="SALIDA">Salidas</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- ===== LOADER ===== -->
+    <div *ngIf="cargando" class="texto-muted centrado">Cargando movimientos...</div>
+
+ <!-- ================= DASHBOARD ================= -->
+<div class="dashboard-grid">
+  <div class="card-dashboard bg-azul">
+    <div class="icono">
+      <mat-icon>inventory_2</mat-icon>
+    </div>
+    <div class="contenido">
+      <h4>Productos totales</h4>
+      <p>{{ resumen.total_productos || 0 }}</p>
+    </div>
+  </div>
+
+  <div class="card-dashboard bg-verde">
+    <div class="icono">
+      <mat-icon>call_received</mat-icon>
+    </div>
+    <div class="contenido">
+      <h4>Entradas registradas</h4>
+      <p>{{ resumen.total_entradas || 0 }}</p>
+    </div>
+  </div>
+
+  <div class="card-dashboard bg-rojo">
+    <div class="icono">
+      <mat-icon>call_made</mat-icon>
+    </div>
+    <div class="contenido">
+      <h4>Salidas registradas</h4>
+      <p>{{ resumen.total_salidas || 0 }}</p>
+    </div>
+  </div>
+
+  <div class="card-dashboard bg-naranja">
+    <div class="icono">
+      <mat-icon>warning</mat-icon>
+    </div>
+    <div class="contenido">
+      <h4>Con stock bajo</h4>
+      <p>{{ resumen.productos_bajos || 0 }}</p>
+    </div>
+  </div>
+</div>
+<!-- ============================================== -->
+
+
+
+    <!-- ===== TABLA ===== -->
+    <div class="tabla-contenedor" *ngIf="!cargando">
+      <table class="tabla-oscura">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Tipo</th>
+            <th>Cantidad</th>
+            <th>Referencia</th>
+            <th>Fecha</th>
+            <th style="width: 120px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of filtrarMovimientos()">
+            <td>{{ m.id_movimiento }}</td>
+            <td>{{ m.producto }}</td>
+            <td>
+              <span class="etiqueta"
+                [ngClass]="{ 'exito': m.tipo === 'ENTRADA', 'peligro': m.tipo === 'SALIDA' }">
+                {{ m.tipo }}
+              </span>
+            </td>
+            <td>{{ m.cantidad }}</td>
+            <td>{{ m.referencia || '-' }}</td>
+            <td>{{ m.fecha | date:'dd/MM/yyyy, h:mm a' }}</td>
+            <td class="acciones-cell">
+              <button mat-icon-button matTooltip="Editar" class="btn-accion" (click)="editarMovimiento(m)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button matTooltip="Eliminar" class="btn-accion" (click)="eliminarMovimiento(m)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

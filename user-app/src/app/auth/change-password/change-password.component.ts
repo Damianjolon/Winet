@@ -62,7 +62,7 @@ export class ChangePasswordComponent implements OnDestroy {
       next: (res) => {
         this.loading = false;
         if (res?.ok) {
-          this.success = `✅ ${res['msg']} Usuario: ${res['usuario']}`;
+          this.success = `✅ ${res.msg} Usuario: ${res.usuario}`;
           // 1) limpia campos y bloquea el form
           this.form.reset();
           this.form.disable();
@@ -70,7 +70,7 @@ export class ChangePasswordComponent implements OnDestroy {
           // 2) inicia redirección en 10s
           this.startRedirectCountdown(10);
         } else {
-          this.error = res?.['msg'] || 'No se pudo actualizar.';
+          this.error = res?.msg || 'No se pudo actualizar.';
         }
       },
       error: (err) => {
